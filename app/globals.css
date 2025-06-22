@@ -93,6 +93,52 @@ button[variant="outline"]:hover {
   @apply bg-yellow-400 text-black border-yellow-400 !important;
 }
 
+/* Print styles for A4 format */
+@media print {
+  * {
+    -webkit-print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+  
+  @page {
+    size: A4;
+    margin: 1in;
+  }
+  
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  
+  .no-print {
+    display: none !important;
+  }
+  
+  .print-only {
+    display: block !important;
+  }
+  
+  header, footer, nav {
+    display: none !important;
+  }
+  
+  .bg-black, .bg-gray-900 {
+    background: white !important;
+  }
+  
+  .text-white {
+    color: black !important;
+  }
+  
+  .text-yellow-400 {
+    color: #fbbf24 !important;
+  }
+}
+
+.print-only {
+  display: none;
+}
+
 /* Mobile responsiveness improvements */
 @media (max-width: 768px) {
   .mobile-hidden {

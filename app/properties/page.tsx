@@ -29,7 +29,7 @@ const kosovoCities = [
   "Podujeva",
 ]
 
-const propertyTypes = ["All Types", "Apartment", "House", "Villa", "Commercial", "Land", "Office"]
+const propertyTypes = ["All Types", "Apartment", "House", "Villa", "Commercial", "Land", "Office", "Premises", "Others"]
 
 export default function PropertiesPage() {
   // Initialize state variables outside the useEffect hook

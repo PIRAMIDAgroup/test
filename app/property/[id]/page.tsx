@@ -11,20 +11,25 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import {
   MapPin,
-  Home,
   Bed,
   Bath,
   Square,
   Calendar,
-  Phone,
-  Mail,
   Heart,
   Share2,
-  ArrowLeft,
+  Phone,
+  Mail,
   Star,
-  User,
-  Send,
-  CheckCircle,
+  ArrowLeft,
+  Car,
+  Wifi,
+  Shield,
+  TreePine,
+  Dumbbell,
+  Waves,
+  Home,
+  Printer,
+  Map,
 } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
@@ -34,6 +39,10 @@ export default function PropertyDetailsPage() {
   const params = useParams()
   const [property, setProperty] = useState<any>(null)
   const [isFavorite, setIsFavorite] = useState(false)
+
+  const handlePrint = () => {
+    window.print()
+  }
   const [showContactForm, setShowContactForm] = useState(false)
   const [contactForm, setContactForm] = useState({
     name: "",
@@ -181,6 +190,10 @@ export default function PropertyDetailsPage() {
               <Button variant="outline" size="sm" className="border-gray-600 text-white hover:bg-yellow-400 hover:text-black hover:border-yellow-400 btn-white-to-yellow">
                 <Share2 className="w-4 h-4 mr-2" />
                 Share
+              </Button>
+              <Button variant="outline" size="sm" className="border-gray-600 text-white hover:bg-yellow-400 hover:text-black hover:border-yellow-400 btn-white-to-yellow" onClick={handlePrint}>
+                <Printer className="w-4 h-4 mr-2" />
+                Print
               </Button>
             </div>
           </div>

@@ -1,4 +1,3 @@
-
 "use client"
 
 import type React from "react"
@@ -363,7 +362,7 @@ export default function AdminDashboard() {
     }
 
     const adminsList = JSON.parse(localStorage.getItem("adminsList") || "[]")
-    
+
     // Check if admin already exists
     if (adminsList.some((admin: Admin) => admin.email === newAdmin.email)) {
       alert("Admin with this email already exists!")
@@ -380,7 +379,7 @@ export default function AdminDashboard() {
 
     adminsList.push(admin)
     localStorage.setItem("adminsList", JSON.stringify(adminsList))
-    
+
     setNewAdmin({ email: "", password: "", role: "admin" })
     setShowAddAdminModal(false)
     loadData()
@@ -848,7 +847,7 @@ export default function AdminDashboard() {
                 >
                   <Plus className="w-4 h-4 mr-2" />
                   Add New Property
-                </Button>
+                </Button
               </div>
 
               <div className="grid grid-cols-1 gap-4">
@@ -1081,13 +1080,22 @@ export default function AdminDashboard() {
                         <SelectValue placeholder="Select type" />
                       </SelectTrigger>
                       <SelectContent className="bg-gray-800 border-gray-600">
-                        {["Apartment", "House", "Villa", "Commercial", "Office", "Land", "Warehouse", "Studio"].map(
-                          (type) => (
-                            <SelectItem key={type} value={type} className="text-white hover:bg-gray-700">
-                              {type}
-                            </SelectItem>
-                          ),
-                        )}
+                        {[
+                          "Apartment",
+                          "House",
+                          "Villa",
+                          "Commercial",
+                          "Office",
+                          "Land",
+                          "Warehouse",
+                          "Studio",
+                          "Premises",
+                          "Others",
+                        ].map((type) => (
+                          <SelectItem key={type} value={type} className="text-white hover:bg-gray-700">
+                            {type}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>

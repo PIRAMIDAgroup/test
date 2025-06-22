@@ -234,7 +234,7 @@ const translations = {
 }
 
 export default function HomePage() {
-  const [currentLang, setCurrentLang] = useState("en")
+  const [currentLang, setCurrentLang] = useState("sq")
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [authMode, setAuthMode] = useState<"login" | "signup">("login")
   const [searchType, setSearchType] = useState("buy")
@@ -427,28 +427,37 @@ export default function HomePage() {
                   e.currentTarget.src = "/placeholder.svg?height=40&width=40"
                 }}
               />
-              <span className="text-xl font-bold text-yellow-400">PIRAMIDA Group</span>
+              <div>
+                <span className="text-xl font-bold text-yellow-400">PIRAMIDA Group</span>
+                <div className="text-xs text-gray-400">Real Estate</div>
+              </div>
             </Link>
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-8">
-              <Link href="/" className="text-white hover:text-yellow-400 transition-colors">
-                {t.home}
+              <Link href="/" className="flex items-center space-x-1 text-white hover:text-yellow-400 transition-colors group">
+                <Home className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                <span>{t.home}</span>
               </Link>
-              <Link href="/properties" className="text-white hover:text-yellow-400 transition-colors">
-                {t.properties}
+              <Link href="/properties" className="flex items-center space-x-1 text-white hover:text-yellow-400 transition-colors group">
+                <Search className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                <span>{t.properties}</span>
               </Link>
-              <Link href="/buy" className="text-white hover:text-yellow-400 transition-colors">
-                {t.buy}
+              <Link href="/buy" className="flex items-center space-x-1 text-white hover:text-yellow-400 transition-colors group">
+                <DollarSign className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                <span>{t.buy}</span>
               </Link>
-              <Link href="/rent" className="text-white hover:text-yellow-400 transition-colors">
-                {t.rent}
+              <Link href="/rent" className="flex items-center space-x-1 text-white hover:text-yellow-400 transition-colors group">
+                <Calendar className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                <span>{t.rent}</span>
               </Link>
-              <Link href="/about" className="text-white hover:text-yellow-400 transition-colors">
-                {t.about}
+              <Link href="/about" className="flex items-center space-x-1 text-white hover:text-yellow-400 transition-colors group">
+                <Users className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                <span>{t.about}</span>
               </Link>
-              <Link href="/contact" className="text-white hover:text-yellow-400 transition-colors">
-                {t.contact}
+              <Link href="/contact" className="flex items-center space-x-1 text-white hover:text-yellow-400 transition-colors group">
+                <Phone className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                <span>{t.contact}</span>
               </Link>
             </div>
 
@@ -494,11 +503,6 @@ export default function HomePage() {
               {isLoggedIn ? (
                 <div className="hidden md:flex items-center space-x-2">
                   <span className="text-sm text-gray-300">Hello, {user?.firstName || user?.email}</span>
-                  <Link href="/add-property">
-                    <Button className="bg-yellow-500 hover:bg-yellow-600 text-black">
-                      {t.addProperty}
-                    </Button>
-                  </Link>
                   <Button variant="ghost" onClick={handleLogout} className="text-white hover:text-yellow-400 btn-white-to-yellow">
                     {t.logout}
                   </Button>
@@ -571,11 +575,6 @@ export default function HomePage() {
                   {isLoggedIn ? (
                     <div className="flex flex-col space-y-2 pt-4 border-t border-gray-700">
                       <span className="text-sm text-gray-300">Hello, {user?.firstName || user?.email}</span>
-                      <Link href="/add-property">
-                        <Button className="w-full bg-yellow-500 hover:bg-yellow-600 text-black">
-                          {t.addProperty}
-                        </Button>
-                      </Link>
                       <Button variant="ghost" onClick={handleLogout} className="w-full text-white hover:text-yellow-400 btn-white-to-yellow">
                         {t.logout}
                       </Button>
@@ -613,7 +612,7 @@ export default function HomePage() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative py-20 px-4 overflow-hidden">
+      <section className="relative py-12 px-4 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black">
           <div className="absolute inset-0 bg-[url('/placeholder.svg?height=1080&width=1920')] bg-cover bg-center opacity-10"></div>
         </div>
@@ -649,7 +648,7 @@ export default function HomePage() {
             transition={{ duration: 1 }}
             className="text-center max-w-4xl mx-auto"
           >
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-white via-yellow-400 to-white bg-clip-text text-transparent">
+            <h1 className="text-3xl md:text-4xl font-bold mb-6 bg-gradient-to-r from-white via-yellow-400 to-white bg-clip-text text-transparent">
               {t.heroTitle}
             </h1>
             <p className="text-xl md:text-2xl text-gray-300 mb-12 leading-relaxed">
