@@ -1,3 +1,4 @@
+
 "use client"
 
 import type React from "react"
@@ -27,6 +28,7 @@ import {
   Upload,
   Camera,
   Save,
+  UserPlus,
 } from "lucide-react"
 import { motion } from "framer-motion"
 import { useRouter } from "next/navigation"
@@ -55,6 +57,7 @@ interface PropertySubmission {
   ownerPhone: string
   submittedAt: string
   status: string
+  images?: string[]
 }
 
 interface ActiveListing {
@@ -75,6 +78,25 @@ interface ActiveListing {
   image?: string
   featured?: boolean
   certified?: boolean
+  description?: string
+  propertyType?: string
+  city?: string
+  address?: string
+  amenities?: string[]
+  yearBuilt?: number
+  floor?: string
+  totalFloors?: string
+  images?: string[]
+  ownerEmail?: string
+  ownerPhone?: string
+}
+
+interface Admin {
+  id: number
+  email: string
+  password: string
+  createdAt: string
+  role: string
 }
 
 export default function AdminDashboard() {
@@ -82,6 +104,9 @@ export default function AdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [pendingRequests, setPendingRequests] = useState<PropertySubmission[]>([])
   const [activeListings, setActiveListings] = useState<ActiveListing[]>([])
+  const [editingListing, setEditingListing] = useState<ActiveListing | null>(null)
+  const [admins, setAdmins] = useState<Admin[]>([])
+  const [newAdmin, setNewAdmin] = useState({ email: "", password: "", role: "admin" })
   const [pricingSettings, setPricingSettings] = useState({
     basic: "9.99",
     featured: "24.99",
@@ -90,6 +115,8 @@ export default function AdminDashboard() {
   const router = useRouter()
 
   const [showAddPropertyModal, setShowAddPropertyModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [showAddAdminModal, setShowAddAdminModal] = useState(false)
   const [newPropertyData, setNewPropertyData] = useState({
     title: "",
     description: "",
@@ -151,6 +178,22 @@ export default function AdminDashboard() {
     const listings = JSON.parse(localStorage.getItem("activeListings") || "[]")
     setActiveListings(listings)
 
+    // Load admins
+    const adminsList = JSON.parse(localStorage.getItem("adminsList") || "[]")
+    if (adminsList.length === 0) {
+      // Create default admin
+      const defaultAdmin = {
+        id: 1,
+        email: "samispahiu1979@gmail.com",
+        password: "spahiu121",
+        createdAt: new Date().toISOString(),
+        role: "super-admin"
+      }
+      adminsList.push(defaultAdmin)
+      localStorage.setItem("adminsList", JSON.stringify(adminsList))
+    }
+    setAdmins(adminsList)
+
     // Load pricing settings
     const pricing = JSON.parse(localStorage.getItem("pricingSettings") || "{}")
     if (Object.keys(pricing).length > 0) {
@@ -195,9 +238,20 @@ export default function AdminDashboard() {
         beds: Number.parseInt(request.bedrooms) || 0,
         baths: Number.parseInt(request.bathrooms) || 0,
         area: `${request.area}m²`,
-        image: "/placeholder.svg?height=200&width=300",
+        image: request.images?.[0] || "/placeholder.svg?height=200&width=300",
         featured: true,
         certified: true,
+        description: request.description,
+        propertyType: request.propertyType,
+        city: request.city,
+        address: request.address,
+        amenities: request.selectedAmenities,
+        yearBuilt: Number.parseInt(request.yearBuilt) || new Date().getFullYear(),
+        floor: request.floor,
+        totalFloors: request.totalFloors,
+        images: request.images || ["/placeholder.svg?height=200&width=300"],
+        ownerEmail: request.ownerEmail,
+        ownerPhone: request.ownerPhone,
       }
       listings.push(newListing)
       localStorage.setItem("activeListings", JSON.stringify(listings))
@@ -229,6 +283,53 @@ export default function AdminDashboard() {
     }
   }
 
+  const handleEditListing = (listing: ActiveListing) => {
+    setEditingListing(listing)
+    setShowEditModal(true)
+  }
+
+  const handleUpdateListing = async () => {
+    if (!editingListing) return
+
+    const listings = JSON.parse(localStorage.getItem("activeListings") || "[]")
+    const updatedListings = listings.map((l: ActiveListing) =>
+      l.id === editingListing.id ? editingListing : l
+    )
+    localStorage.setItem("activeListings", JSON.stringify(updatedListings))
+
+    // Also update in propertySubmissions if it exists there
+    const submissions = JSON.parse(localStorage.getItem("propertySubmissions") || "[]")
+    const updatedSubmissions = submissions.map((s: PropertySubmission) =>
+      s.id === editingListing.id ? {
+        ...s,
+        title: editingListing.title,
+        description: editingListing.description,
+        price: editingListing.price.replace("€", "").split("/")[0],
+        priceType: editingListing.type,
+        propertyType: editingListing.propertyType,
+        city: editingListing.city,
+        address: editingListing.address,
+        bedrooms: editingListing.beds?.toString() || "",
+        bathrooms: editingListing.baths?.toString() || "",
+        area: editingListing.area?.replace("m²", "") || "",
+        yearBuilt: editingListing.yearBuilt?.toString() || "",
+        floor: editingListing.floor || "",
+        totalFloors: editingListing.totalFloors || "",
+        selectedAmenities: editingListing.amenities || [],
+        ownerName: editingListing.owner,
+        ownerEmail: editingListing.ownerEmail || "info@piramidagroup.com",
+        ownerPhone: editingListing.ownerPhone || "+383 44 613 293",
+      } : s
+    )
+    localStorage.setItem("propertySubmissions", JSON.stringify(updatedSubmissions))
+
+    setShowEditModal(false)
+    setEditingListing(null)
+    loadData()
+    notifyMainPageUpdate()
+    alert("Listing updated successfully!")
+  }
+
   const handleDuplicateListing = (listingId: number) => {
     const listings = JSON.parse(localStorage.getItem("activeListings") || "[]")
     const listing = listings.find((l: ActiveListing) => l.id === listingId)
@@ -252,6 +353,47 @@ export default function AdminDashboard() {
   const handleUpdatePricing = () => {
     localStorage.setItem("pricingSettings", JSON.stringify(pricingSettings))
     alert("Pricing updated successfully!")
+  }
+
+  const handleAddAdmin = () => {
+    if (!newAdmin.email || !newAdmin.password) {
+      alert("Please fill in all fields")
+      return
+    }
+
+    const adminsList = JSON.parse(localStorage.getItem("adminsList") || "[]")
+    
+    // Check if admin already exists
+    if (adminsList.some((admin: Admin) => admin.email === newAdmin.email)) {
+      alert("Admin with this email already exists!")
+      return
+    }
+
+    const admin: Admin = {
+      id: Date.now(),
+      email: newAdmin.email,
+      password: newAdmin.password,
+      createdAt: new Date().toISOString(),
+      role: newAdmin.role
+    }
+
+    adminsList.push(admin)
+    localStorage.setItem("adminsList", JSON.stringify(adminsList))
+    
+    setNewAdmin({ email: "", password: "", role: "admin" })
+    setShowAddAdminModal(false)
+    loadData()
+    alert("Admin added successfully!")
+  }
+
+  const handleDeleteAdmin = (adminId: number) => {
+    if (confirm("Are you sure you want to delete this admin?")) {
+      const adminsList = JSON.parse(localStorage.getItem("adminsList") || "[]")
+      const updatedAdmins = adminsList.filter((admin: Admin) => admin.id !== adminId)
+      localStorage.setItem("adminsList", JSON.stringify(updatedAdmins))
+      loadData()
+      alert("Admin deleted successfully!")
+    }
   }
 
   const handleNewPropertyImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -351,6 +493,8 @@ export default function AdminDashboard() {
         totalFloors: newPropertyData.totalFloors,
         address: newPropertyData.address,
         images: imageUrls,
+        ownerEmail: newPropertyData.ownerEmail,
+        ownerPhone: newPropertyData.ownerPhone,
       }
 
       // Create complete property data for propertySubmissions
@@ -434,16 +578,16 @@ export default function AdminDashboard() {
             </div>
             <div className="flex items-center space-x-4">
               <Link href="/workflow">
-                <Button variant="ghost" size="sm" className="text-white hover:text-yellow-400">
+                <Button variant="ghost" size="sm" className="text-white hover:text-yellow-400 btn-white-to-yellow">
                   <ExternalLink className="w-4 h-4 mr-2" />
                   Workflow
                 </Button>
               </Link>
-              <Button variant="ghost" size="sm" className="text-white hover:text-yellow-400">
+              <Button variant="ghost" size="sm" className="text-white hover:text-yellow-400 btn-white-to-yellow">
                 <Bell className="w-4 h-4 mr-2" />
                 Notifications
               </Button>
-              <Button variant="ghost" size="sm" className="text-white hover:text-yellow-400">
+              <Button variant="ghost" size="sm" className="text-white hover:text-yellow-400 btn-white-to-yellow">
                 <Settings className="w-4 h-4 mr-2" />
                 Settings
               </Button>
@@ -467,7 +611,7 @@ export default function AdminDashboard() {
               color: "text-yellow-400",
             },
             { title: "Active Listings", value: activeListings.length.toString(), icon: Home, color: "text-green-400" },
-            { title: "Total Users", value: "1,234", icon: Users, color: "text-blue-400" },
+            { title: "Total Admins", value: admins.length.toString(), icon: Users, color: "text-blue-400" },
             { title: "Monthly Revenue", value: "€2,450", icon: DollarSign, color: "text-purple-400" },
           ].map((stat, index) => (
             <motion.div
@@ -499,6 +643,9 @@ export default function AdminDashboard() {
             </TabsTrigger>
             <TabsTrigger value="listings" className="data-[state=active]:bg-yellow-500 data-[state=active]:text-black">
               Active Listings ({activeListings.length})
+            </TabsTrigger>
+            <TabsTrigger value="admins" className="data-[state=active]:bg-yellow-500 data-[state=active]:text-black">
+              Admin Management ({admins.length})
             </TabsTrigger>
             <TabsTrigger value="pricing" className="data-[state=active]:bg-yellow-500 data-[state=active]:text-black">
               Pricing Settings
@@ -547,7 +694,7 @@ export default function AdminDashboard() {
                                 e.stopPropagation()
                                 setSelectedRequest(request)
                               }}
-                              className="border-gray-600 text-white hover:bg-gray-800"
+                              className="border-gray-600 text-white hover:bg-yellow-400 hover:text-black btn-white-to-yellow"
                             >
                               <Eye className="w-4 h-4 mr-1" />
                               View Details
@@ -743,7 +890,7 @@ export default function AdminDashboard() {
                               <Button
                                 size="sm"
                                 variant="outline"
-                                className="border-gray-600 text-white hover:bg-gray-800"
+                                className="border-gray-600 text-white hover:bg-yellow-400 hover:text-black btn-white-to-yellow"
                               >
                                 <Eye className="w-4 h-4 mr-1" />
                                 View
@@ -752,8 +899,8 @@ export default function AdminDashboard() {
                             <Button
                               size="sm"
                               variant="outline"
-                              className="border-gray-600 text-white hover:bg-gray-800"
-                              onClick={() => alert("Edit functionality would open edit modal")}
+                              className="border-gray-600 text-white hover:bg-yellow-400 hover:text-black btn-white-to-yellow"
+                              onClick={() => handleEditListing(listing)}
                             >
                               <Edit className="w-4 h-4 mr-1" />
                               Edit
@@ -761,7 +908,7 @@ export default function AdminDashboard() {
                             <Button
                               size="sm"
                               variant="outline"
-                              className="border-gray-600 text-white hover:bg-gray-800"
+                              className="border-gray-600 text-white hover:bg-yellow-400 hover:text-black btn-white-to-yellow"
                               onClick={() => handleDuplicateListing(listing.id)}
                             >
                               <Copy className="w-4 h-4 mr-1" />
@@ -784,6 +931,52 @@ export default function AdminDashboard() {
                     </CardContent>
                   </Card>
                 )}
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* Admin Management */}
+          <TabsContent value="admins">
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-bold text-white">Admin Management</h2>
+                <Button
+                  onClick={() => setShowAddAdminModal(true)}
+                  className="bg-yellow-500 hover:bg-yellow-600 text-black"
+                >
+                  <UserPlus className="w-4 h-4 mr-2" />
+                  Add New Admin
+                </Button>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4">
+                {admins.map((admin) => (
+                  <Card
+                    key={admin.id}
+                    className="bg-gray-900/50 backdrop-blur-sm border border-gray-700 hover:border-yellow-500/50 transition-colors"
+                  >
+                    <CardContent className="p-6">
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <h3 className="text-lg font-semibold text-white">{admin.email}</h3>
+                          <p className="text-gray-400">Role: {admin.role}</p>
+                          <p className="text-gray-400 text-sm">Created: {new Date(admin.createdAt).toLocaleDateString()}</p>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Badge className={admin.role === "super-admin" ? "bg-red-500 text-white" : "bg-blue-500 text-white"}>
+                            {admin.role}
+                          </Badge>
+                          {admin.role !== "super-admin" && (
+                            <Button size="sm" variant="destructive" onClick={() => handleDeleteAdmin(admin.id)}>
+                              <Trash2 className="w-4 h-4 mr-1" />
+                              Delete
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
             </div>
           </TabsContent>
@@ -843,6 +1036,7 @@ export default function AdminDashboard() {
           </TabsContent>
         </Tabs>
       </div>
+
       {/* Add Property Modal */}
       {showAddPropertyModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -1045,7 +1239,7 @@ export default function AdminDashboard() {
                     <label htmlFor="admin-image-upload" className="cursor-pointer">
                       <div className="inline-flex items-center px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-black font-medium rounded-md transition-colors">
                         <Upload className="w-4 h-4 mr-2" />
-                        Choose Photos from Device
+                        Choose Photos
                       </div>
                     </label>
                   </div>
@@ -1087,13 +1281,245 @@ export default function AdminDashboard() {
                   <Button
                     variant="outline"
                     onClick={() => setShowAddPropertyModal(false)}
-                    className="border-gray-600 text-white hover:bg-gray-800"
+                    className="border-gray-600 text-white hover:bg-yellow-400 hover:text-black btn-white-to-yellow"
                   >
                     Cancel
                   </Button>
                   <Button onClick={handleAddNewProperty} className="bg-yellow-500 hover:bg-yellow-600 text-black">
                     <Save className="w-4 h-4 mr-2" />
                     Add Property
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Property Modal */}
+      {showEditModal && editingListing && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-gray-900 border border-gray-700 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-white">Edit Property</h2>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowEditModal(false)}
+                  className="text-gray-400 hover:text-white"
+                >
+                  <X className="w-5 h-5" />
+                </Button>
+              </div>
+
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-white">Property Title</Label>
+                    <Input
+                      value={editingListing.title}
+                      onChange={(e) => setEditingListing({ ...editingListing, title: e.target.value })}
+                      className="bg-gray-800 border-gray-600 text-white"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-white">Property Type</Label>
+                    <Input
+                      value={editingListing.propertyType || ""}
+                      onChange={(e) => setEditingListing({ ...editingListing, propertyType: e.target.value })}
+                      className="bg-gray-800 border-gray-600 text-white"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label className="text-white">Description</Label>
+                  <Textarea
+                    value={editingListing.description || ""}
+                    onChange={(e) => setEditingListing({ ...editingListing, description: e.target.value })}
+                    className="bg-gray-800 border-gray-600 text-white"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <Label className="text-white">Price (€)</Label>
+                    <Input
+                      value={editingListing.price.replace("€", "").split("/")[0]}
+                      onChange={(e) => setEditingListing({ 
+                        ...editingListing, 
+                        price: `€${e.target.value}${editingListing.type === "rent" ? "/month" : ""}`
+                      })}
+                      className="bg-gray-800 border-gray-600 text-white"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-white">Type</Label>
+                    <Select
+                      value={editingListing.type}
+                      onValueChange={(value) => setEditingListing({ 
+                        ...editingListing, 
+                        type: value,
+                        price: `€${editingListing.price.replace("€", "").split("/")[0]}${value === "rent" ? "/month" : ""}`
+                      })}
+                    >
+                      <SelectTrigger className="bg-gray-800 border-gray-600 text-white">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-gray-800 border-gray-600">
+                        <SelectItem value="sale" className="text-white hover:bg-gray-700">For Sale</SelectItem>
+                        <SelectItem value="rent" className="text-white hover:bg-gray-700">For Rent</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="text-white">City</Label>
+                    <Input
+                      value={editingListing.city || editingListing.location || ""}
+                      onChange={(e) => setEditingListing({ 
+                        ...editingListing, 
+                        city: e.target.value,
+                        location: e.target.value
+                      })}
+                      className="bg-gray-800 border-gray-600 text-white"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label className="text-white">Address</Label>
+                  <Input
+                    value={editingListing.address || ""}
+                    onChange={(e) => setEditingListing({ ...editingListing, address: e.target.value })}
+                    className="bg-gray-800 border-gray-600 text-white"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div>
+                    <Label className="text-white">Area</Label>
+                    <Input
+                      value={editingListing.area?.replace("m²", "") || ""}
+                      onChange={(e) => setEditingListing({ ...editingListing, area: `${e.target.value}m²` })}
+                      className="bg-gray-800 border-gray-600 text-white"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-white">Bedrooms</Label>
+                    <Input
+                      type="number"
+                      value={editingListing.beds || ""}
+                      onChange={(e) => setEditingListing({ ...editingListing, beds: Number(e.target.value) })}
+                      className="bg-gray-800 border-gray-600 text-white"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-white">Bathrooms</Label>
+                    <Input
+                      type="number"
+                      value={editingListing.baths || ""}
+                      onChange={(e) => setEditingListing({ ...editingListing, baths: Number(e.target.value) })}
+                      className="bg-gray-800 border-gray-600 text-white"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-white">Year Built</Label>
+                    <Input
+                      type="number"
+                      value={editingListing.yearBuilt || ""}
+                      onChange={(e) => setEditingListing({ ...editingListing, yearBuilt: Number(e.target.value) })}
+                      className="bg-gray-800 border-gray-600 text-white"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex justify-end space-x-4 pt-6 border-t border-gray-700">
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowEditModal(false)}
+                    className="border-gray-600 text-white hover:bg-yellow-400 hover:text-black btn-white-to-yellow"
+                  >
+                    Cancel
+                  </Button>
+                  <Button onClick={handleUpdateListing} className="bg-yellow-500 hover:bg-yellow-600 text-black">
+                    <Save className="w-4 h-4 mr-2" />
+                    Update Property
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add Admin Modal */}
+      {showAddAdminModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-gray-900 border border-gray-700 rounded-lg max-w-md w-full">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-white">Add New Admin</h2>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowAddAdminModal(false)}
+                  className="text-gray-400 hover:text-white"
+                >
+                  <X className="w-5 h-5" />
+                </Button>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <Label className="text-white">Email</Label>
+                  <Input
+                    type="email"
+                    value={newAdmin.email}
+                    onChange={(e) => setNewAdmin({ ...newAdmin, email: e.target.value })}
+                    placeholder="admin@example.com"
+                    className="bg-gray-800 border-gray-600 text-white"
+                  />
+                </div>
+
+                <div>
+                  <Label className="text-white">Password</Label>
+                  <Input
+                    type="password"
+                    value={newAdmin.password}
+                    onChange={(e) => setNewAdmin({ ...newAdmin, password: e.target.value })}
+                    placeholder="Enter password"
+                    className="bg-gray-800 border-gray-600 text-white"
+                  />
+                </div>
+
+                <div>
+                  <Label className="text-white">Role</Label>
+                  <Select
+                    value={newAdmin.role}
+                    onValueChange={(value) => setNewAdmin({ ...newAdmin, role: value })}
+                  >
+                    <SelectTrigger className="bg-gray-800 border-gray-600 text-white">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-gray-800 border-gray-600">
+                      <SelectItem value="admin" className="text-white hover:bg-gray-700">Admin</SelectItem>
+                      <SelectItem value="manager" className="text-white hover:bg-gray-700">Manager</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="flex justify-end space-x-4 pt-4">
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowAddAdminModal(false)}
+                    className="border-gray-600 text-white hover:bg-yellow-400 hover:text-black btn-white-to-yellow"
+                  >
+                    Cancel
+                  </Button>
+                  <Button onClick={handleAddAdmin} className="bg-yellow-500 hover:bg-yellow-600 text-black">
+                    <UserPlus className="w-4 h-4 mr-2" />
+                    Add Admin
                   </Button>
                 </div>
               </div>

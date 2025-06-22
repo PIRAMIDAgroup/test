@@ -1,77 +1,236 @@
+
 "use client"
+
+import type React from "react"
 
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Search, MapPin, Home, Key, Star, Globe, User, LogIn, UserPlus, Menu, X } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import {
+  Search,
+  MapPin,
+  Calendar,
+  Phone,
+  Mail,
+  Star,
+  Bed,
+  Bath,
+  Square,
+  Heart,
+  Share2,
+  ChevronDown,
+  Menu,
+  X,
+  Globe,
+  Home,
+  DollarSign,
+  Users,
+  Award,
+  TrendingUp,
+  Shield,
+  CheckCircle,
+  PlayCircle,
+  ArrowRight,
+} from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import Link from "next/link"
 import Image from "next/image"
+import AuthModal from "@/components/auth-modal"
 
-const kosovoCities = [
-  "Pristina",
-  "Prizren",
-  "Peja",
-  "Gjakova",
-  "Gjilan",
-  "Mitrovica",
-  "Ferizaj",
-  "Vushtrri",
-  "Suhareka",
-  "Rahovec",
-  "Lipjan",
-  "Podujeva",
-]
-
-const languages = [
-  { code: "en", name: "English", flag: "🇬🇧" },
-  { code: "sq", name: "Shqip", flag: "🇦🇱" },
-  { code: "de", name: "Deutsch", flag: "🇩🇪" },
-  { code: "it", name: "Italiano", flag: "🇮🇹" },
-  { code: "sr", name: "Српски", flag: "🇷🇸" },
-]
-
+// Enhanced translations with all pages and navigation
 const translations = {
   en: {
-    hero: "Find Your Dream Property in Kosovo",
-    subtitle: "Discover the perfect home with PIRAMIDA Group - Kosovo's premier real estate platform",
-    searchPlaceholder: "Search by city...",
+    // Navigation
+    home: "Home",
+    properties: "Properties",
     buy: "Buy",
     rent: "Rent",
-    search: "Search Properties",
+    sell: "Sell",
+    about: "About",
+    contact: "Contact",
+    pricing: "Pricing",
+    valuation: "Valuation",
+    workflow: "Workflow",
+    
+    // Main content
+    heroTitle: "Find Your Dream Property in Kosovo",
+    heroSubtitle: "Discover the best real estate opportunities with PIRAMIDA Group - your trusted partner since 2010",
+    searchPlaceholder: "Search by location, property type...",
+    searchButton: "Search Properties",
+    buyProperties: "Buy",
+    rentProperties: "Rent",
+    allCities: "All Cities",
+    allTypes: "All Types",
+    
+    // Property types
+    apartment: "Apartment",
+    house: "House",
+    villa: "Villa",
+    commercial: "Commercial",
+    office: "Office",
+    land: "Land",
+    
+    // Cities
+    pristina: "Pristina",
+    prizren: "Prizren",
+    peja: "Peja",
+    gjakova: "Gjakova",
+    gjilan: "Gjilan",
+    mitrovica: "Mitrovica",
+    ferizaj: "Ferizaj",
+    
+    // Features
     featuredProperties: "Featured Properties",
-    whyChooseUs: "Why Choose PIRAMIDA Group",
-    experience: "15+ Years Experience",
-    experienceDesc: "Trusted expertise in Kosovo real estate market",
-    properties: "1000+ Properties",
-    propertiesDesc: "Extensive portfolio across all major cities",
-    support: "24/7 Support",
-    supportDesc: "Dedicated customer service team",
+    premiumProperties: "Premium Properties",
+    newListings: "New Listings",
+    viewAll: "View All",
+    viewDetails: "View Details",
+    contactAgent: "Contact Agent",
+    
+    // Property details
+    bedrooms: "Bedrooms",
+    bathrooms: "Bathrooms",
+    area: "Area",
+    yearBuilt: "Year Built",
+    price: "Price",
+    forSale: "For Sale",
+    forRent: "For Rent",
+    
+    // Stats
+    propertiesSold: "Properties Sold",
+    happyClients: "Happy Clients",
+    yearsExperience: "Years Experience",
+    citiesCovered: "Cities Covered",
+    
+    // About section
+    aboutTitle: "Why Choose PIRAMIDA Group?",
+    aboutDescription: "With over a decade of experience in Kosovo's real estate market, we provide professional services and trusted expertise.",
+    
+    // Services
+    buyingService: "Property Buying",
+    sellingService: "Property Selling",
+    rentingService: "Property Renting",
+    valuationService: "Property Valuation",
+    
+    // Footer
+    company: "Company",
+    services: "Services",
+    support: "Support",
+    
+    // Auth
     login: "Login",
     signup: "Sign Up",
+    logout: "Logout",
     addProperty: "Add Property",
+    
+    // Contact
+    phoneNumber: "+383 44 613 293",
+    email: "info@piramidagroup.com",
+    address: "Gjilan, Kosovo",
+    
+    // Buttons
+    getStarted: "Get Started",
+    learnMore: "Learn More",
+    bookValuation: "Book Valuation",
+    scheduleViewing: "Schedule Viewing",
   },
   sq: {
-    hero: "Gjeni Pronën Tuaj të Ëndrrave në Kosovë",
-    subtitle: "Zbuloni shtëpinë perfekte me PIRAMIDA Group - platforma kryesore e pasurive të paluajtshme në Kosovë",
-    searchPlaceholder: "Kërkoni sipas qytetit...",
+    // Navigation
+    home: "Kryefaqe",
+    properties: "Pronësi",
     buy: "Bli",
     rent: "Qira",
-    search: "Kërko Prona",
-    featuredProperties: "Prona të Zgjedhura",
-    whyChooseUs: "Pse të Zgjidhni PIRAMIDA Group",
-    experience: "15+ Vite Përvojë",
-    experienceDesc: "Ekspertizë e besuar në tregun e pasurive të paluajtshme në Kosovë",
-    properties: "1000+ Prona",
-    propertiesDesc: "Portofol i gjerë në të gjitha qytetet kryesore",
-    support: "Mbështetje 24/7",
-    supportDesc: "Ekip i dedikuar i shërbimit ndaj klientëve",
+    sell: "Shit",
+    about: "Rreth Nesh",
+    contact: "Kontakt",
+    pricing: "Çmimet",
+    valuation: "Vlerësim",
+    workflow: "Workflow",
+    
+    // Main content
+    heroTitle: "Gjeni Pronën Tuaj të Ëndrrave në Kosovë",
+    heroSubtitle: "Zbuloni mundësitë më të mira të pasurive të patundshme me PIRAMIDA Group - partneri juaj i besuar që nga viti 2010",
+    searchPlaceholder: "Kërko sipas vendndodhjes, llojit të pronës...",
+    searchButton: "Kërko Prona",
+    buyProperties: "Bli",
+    rentProperties: "Qira",
+    allCities: "Të Gjitha Qytetet",
+    allTypes: "Të Gjitha Llojet",
+    
+    // Property types
+    apartment: "Apartament",
+    house: "Shtëpi",
+    villa: "Vilë",
+    commercial: "Komerciale",
+    office: "Zyrë",
+    land: "Tokë",
+    
+    // Cities
+    pristina: "Prishtina",
+    prizren: "Prizreni",
+    peja: "Peja",
+    gjakova: "Gjakova",
+    gjilan: "Gjilani",
+    mitrovica: "Mitrovica",
+    ferizaj: "Ferizaj",
+    
+    // Features
+    featuredProperties: "Prona të Veçanta",
+    premiumProperties: "Prona Premium",
+    newListings: "Shpallje të Reja",
+    viewAll: "Shiko Të Gjitha",
+    viewDetails: "Shiko Detajet",
+    contactAgent: "Kontakto Agentin",
+    
+    // Property details
+    bedrooms: "Dhoma Gjumi",
+    bathrooms: "Banjo",
+    area: "Sipërfaqja",
+    yearBuilt: "Viti i Ndërtimit",
+    price: "Çmimi",
+    forSale: "Për Shitje",
+    forRent: "Për Qira",
+    
+    // Stats
+    propertiesSold: "Prona të Shitura",
+    happyClients: "Klientë të Kënaqur",
+    yearsExperience: "Vite Përvojë",
+    citiesCovered: "Qytete të Mbuluara",
+    
+    // About section
+    aboutTitle: "Pse të Zgjidhni PIRAMIDA Group?",
+    aboutDescription: "Me më shumë se një dekadë përvojë në tregun e pasurive të patundshme në Kosovë, ne ofrojmë shërbime profesionale dhe ekspertizë të besuar.",
+    
+    // Services
+    buyingService: "Blerje Prone",
+    sellingService: "Shitje Prone",
+    rentingService: "Qira Prone",
+    valuationService: "Vlerësim Prone",
+    
+    // Footer
+    company: "Kompania",
+    services: "Shërbimet",
+    support: "Mbështetja",
+    
+    // Auth
     login: "Hyrje",
     signup: "Regjistrohu",
+    logout: "Dil",
     addProperty: "Shto Pronë",
+    
+    // Contact
+    phoneNumber: "+383 44 613 293",
+    email: "info@piramidagroup.com",
+    address: "Gjilan, Kosovë",
+    
+    // Buttons
+    getStarted: "Fillo Tani",
+    learnMore: "Mëso Më Shumë",
+    bookValuation: "Rezervo Vlerësim",
+    scheduleViewing: "Planifiko Vizitë",
   },
 }
 
@@ -87,6 +246,8 @@ export default function HomePage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [user, setUser] = useState<any>(null)
   const [dynamicProperties, setDynamicProperties] = useState<any[]>([])
+
+  const t = translations[currentLang as keyof typeof translations]
 
   useEffect(() => {
     // Check if user is logged in
@@ -118,132 +279,143 @@ export default function HomePage() {
     }
   }, [])
 
-  const t = translations[currentLang as keyof typeof translations] || translations.en
-
   const loadDynamicProperties = () => {
-    const activeListings = JSON.parse(localStorage.getItem("activeListings") || "[]")
-    const submissions = JSON.parse(localStorage.getItem("propertySubmissions") || "[]")
+    try {
+      const activeListings = JSON.parse(localStorage.getItem("activeListings") || "[]")
+      const submissions = JSON.parse(localStorage.getItem("propertySubmissions") || "[]")
 
-    // Combine all properties
-    const allProperties = [
-      ...activeListings.map((listing: any) => ({
-        ...listing,
-        id: listing.id,
-        title: listing.title,
-        price: listing.price,
-        location: listing.location || listing.city,
-        beds: listing.beds || 0,
-        baths: listing.baths || 0,
-        area: listing.area,
-        image: listing.image,
-        featured: listing.featured || listing.plan === "featured" || listing.plan === "premium",
-        certified: listing.certified,
-      })),
-      ...submissions
-        .filter((sub: any) => sub.status === "approved")
-        .map((sub: any) => ({
-          id: sub.id,
-          title: sub.title,
-          price: `€${sub.price}${sub.priceType === "rent" ? "/month" : ""}`,
-          location: sub.city,
-          beds: Number.parseInt(sub.bedrooms) || 0,
-          baths: Number.parseInt(sub.bathrooms) || 0,
-          area: `${sub.area}m²`,
-          image: sub.images?.[0] || "/placeholder.svg?height=200&width=300",
-          featured: false,
-          certified: true,
+      // Combine properties from both sources
+      const combinedProperties = [
+        // Active listings (admin-created properties)
+        ...activeListings.map((listing: any) => ({
+          id: listing.id,
+          title: listing.title,
+          price: listing.price.replace("€", "").split("/")[0],
+          type: listing.type,
+          location: listing.location || listing.city,
+          beds: listing.beds || 0,
+          baths: listing.baths || 0,
+          area: listing.area,
+          image: listing.image,
+          featured: listing.featured,
+          certified: listing.certified,
         })),
-    ]
+        // Approved submissions (user-submitted properties)
+        ...submissions
+          .filter((sub: any) => sub.status === "approved")
+          .map((sub: any) => ({
+            id: sub.id,
+            title: sub.title,
+            price: sub.price,
+            type: sub.priceType,
+            location: sub.city,
+            beds: Number.parseInt(sub.bedrooms) || 0,
+            baths: Number.parseInt(sub.bathrooms) || 0,
+            area: `${sub.area}m²`,
+            image: sub.images?.[0] || "/placeholder.svg?height=200&width=300",
+            featured: false,
+            certified: false,
+          })),
+      ]
 
-    // Get featured properties (limit to 6)
-    const featuredProperties = allProperties.filter((property) => property.featured).slice(0, 6)
+      // Remove duplicates based on ID
+      const uniqueProperties = combinedProperties.filter(
+        (property, index, self) => index === self.findIndex((p) => p.id === property.id),
+      )
 
-    setDynamicProperties(featuredProperties)
-  }
-
-  const handleSearch = () => {
-    // Navigate to properties page with search parameters
-    const params = new URLSearchParams()
-    if (searchType) params.set("type", searchType)
-    if (selectedCity) params.set("city", selectedCity)
-
-    window.location.href = `/properties?${params.toString()}`
-  }
-
-  const handlePropertyClick = (propertyId: number) => {
-    // Navigate to property details
-    window.location.href = `/property/${propertyId}`
-  }
-
-  const handleAuthSubmit = async (formData: any) => {
-    if (authMode === "signup") {
-      // Registration logic
-      const userData = {
-        id: Date.now(),
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        email: formData.email,
-        registeredAt: new Date().toISOString(),
-        provider: formData.provider || "email",
-      }
-
-      // Save user data
-      const existingUsers = JSON.parse(localStorage.getItem("users") || "[]")
-
-      // Check if user already exists
-      const existingUser = existingUsers.find((u: any) => u.email === formData.email)
-      if (existingUser) {
-        alert("User with this email already exists. Please login instead.")
-        return
-      }
-
-      existingUsers.push(userData)
-      localStorage.setItem("users", JSON.stringify(existingUsers))
-      localStorage.setItem("userData", JSON.stringify(userData))
-
-      setIsLoggedIn(true)
-      setUser(userData)
-      setShowAuthModal(false)
-
-      if (formData.provider === "google") {
-        alert("Successfully signed up with Google! Welcome to PIRAMIDA Group.")
-      } else {
-        alert("Registration successful! Welcome to PIRAMIDA Group.")
-      }
-    } else {
-      // Login logic
-      const users = JSON.parse(localStorage.getItem("users") || "[]")
-      const user = users.find((u: any) => u.email === formData.email)
-
-      if (user) {
-        localStorage.setItem("userData", JSON.stringify(user))
-        setIsLoggedIn(true)
-        setUser(user)
-        setShowAuthModal(false)
-
-        if (formData.provider === "google") {
-          alert("Successfully logged in with Google! Welcome back.")
-        } else {
-          alert("Login successful! Welcome back.")
-        }
-      } else {
-        alert("User not found. Please register first.")
-      }
+      setDynamicProperties(uniqueProperties)
+    } catch (error) {
+      console.error("Error loading dynamic properties:", error)
     }
+  }
+
+  const handleAuth = (formData: any) => {
+    // Simulate authentication
+    const userData = {
+      id: Date.now(),
+      ...formData,
+      registeredAt: new Date().toISOString(),
+    }
+
+    localStorage.setItem("userData", JSON.stringify(userData))
+    setUser(userData)
+    setIsLoggedIn(true)
+    setShowAuthModal(false)
+
+    alert(`Welcome ${formData.firstName || formData.email}! You have successfully ${authMode === "login" ? "logged in" : "registered"}.`)
   }
 
   const handleLogout = () => {
     localStorage.removeItem("userData")
-    setIsLoggedIn(false)
     setUser(null)
+    setIsLoggedIn(false)
+    alert("You have been logged out successfully.")
   }
+
+  const handleSearch = () => {
+    const searchParams = new URLSearchParams()
+    searchParams.set("type", searchType)
+    if (selectedCity) searchParams.set("city", selectedCity)
+    
+    if (searchType === "buy") {
+      window.location.href = `/buy?${searchParams.toString()}`
+    } else {
+      window.location.href = `/rent?${searchParams.toString()}`
+    }
+  }
+
+  // Sample property data - mix with dynamic properties
+  const sampleProperties = [
+    {
+      id: 1,
+      title: "Modern Apartment in Pristina Center",
+      price: "85000",
+      type: "sale",
+      location: "Pristina",
+      beds: 2,
+      baths: 1,
+      area: "65m²",
+      image: "/placeholder.svg?height=200&width=300",
+      featured: true,
+      certified: false,
+    },
+    {
+      id: 2,
+      title: "Luxury Villa in Prizren",
+      price: "250000",
+      type: "sale",
+      location: "Prizren",
+      beds: 4,
+      baths: 3,
+      area: "180m²",
+      image: "/placeholder.svg?height=200&width=300",
+      featured: true,
+      certified: true,
+    },
+    {
+      id: 3,
+      title: "Cozy Studio for Rent",
+      price: "300",
+      type: "rent",
+      location: "Gjilan",
+      beds: 1,
+      baths: 1,
+      area: "35m²",
+      image: "/placeholder.svg?height=200&width=300",
+      featured: false,
+      certified: false,
+    },
+  ]
+
+  // Combine sample properties with dynamic ones
+  const allProperties = [...dynamicProperties, ...sampleProperties].slice(0, 6)
 
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* Header */}
-      <header className="relative z-50 bg-black/90 backdrop-blur-md border-b border-yellow-500/20">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
+      {/* Navigation */}
+      <nav className="bg-gray-900/50 backdrop-blur-md border-b border-yellow-500/20 sticky top-0 z-50">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <Link href="/" className="flex items-center space-x-2">
               <div className="w-10 h-10 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center">
@@ -253,22 +425,31 @@ export default function HomePage() {
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-8">
-              <Link href="/" className="hover:text-yellow-400 transition-colors">
-                Home
+            <div className="hidden md:flex items-center space-x-8">
+              <Link href="/" className="text-white hover:text-yellow-400 transition-colors">
+                {t.home}
               </Link>
-              <Link href="/properties" className="hover:text-yellow-400 transition-colors">
-                Properties
+              <Link href="/properties" className="text-white hover:text-yellow-400 transition-colors">
+                {t.properties}
               </Link>
-              <Link href="/about" className="hover:text-yellow-400 transition-colors">
-                About
+              <Link href="/buy" className="text-white hover:text-yellow-400 transition-colors">
+                {t.buy}
               </Link>
-              <Link href="/contact" className="hover:text-yellow-400 transition-colors">
-                Contact
+              <Link href="/rent" className="text-white hover:text-yellow-400 transition-colors">
+                {t.rent}
               </Link>
-            </nav>
+              <Link href="/sell" className="text-white hover:text-yellow-400 transition-colors">
+                {t.sell}
+              </Link>
+              <Link href="/about" className="text-white hover:text-yellow-400 transition-colors">
+                {t.about}
+              </Link>
+              <Link href="/contact" className="text-white hover:text-yellow-400 transition-colors">
+                {t.contact}
+              </Link>
+            </div>
 
-            {/* Right Side */}
+            {/* Right Section */}
             <div className="flex items-center space-x-4">
               {/* Language Selector */}
               <div className="relative">
@@ -276,79 +457,70 @@ export default function HomePage() {
                   variant="ghost"
                   size="sm"
                   onClick={() => setShowLangDropdown(!showLangDropdown)}
-                  className="text-white hover:text-yellow-400 hover:bg-yellow-400/10"
+                  className="text-white hover:text-yellow-400 btn-white-to-yellow"
                 >
-                  <Globe className="w-4 h-4 mr-2" />
-                  {languages.find((l) => l.code === currentLang)?.flag}
+                  <Globe className="w-4 h-4 mr-1" />
+                  {currentLang.toUpperCase()}
+                  <ChevronDown className="w-3 h-3 ml-1" />
                 </Button>
-                <AnimatePresence>
-                  {showLangDropdown && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      className="absolute right-0 mt-2 w-40 bg-black/90 backdrop-blur-md border border-yellow-500/20 rounded-lg shadow-xl z-50"
+                {showLangDropdown && (
+                  <div className="absolute right-0 mt-2 w-24 bg-gray-800 rounded-md shadow-lg border border-gray-700 z-50">
+                    <button
+                      onClick={() => {
+                        setCurrentLang("en")
+                        setShowLangDropdown(false)
+                      }}
+                      className="block w-full text-left px-3 py-2 text-sm text-white hover:bg-yellow-400 hover:text-black transition-colors"
                     >
-                      {languages.map((lang) => (
-                        <button
-                          key={lang.code}
-                          onClick={() => {
-                            setCurrentLang(lang.code)
-                            setShowLangDropdown(false)
-                          }}
-                          className="w-full px-4 py-2 text-left hover:bg-yellow-400/10 flex items-center space-x-2 first:rounded-t-lg last:rounded-b-lg transition-colors"
-                        >
-                          <span>{lang.flag}</span>
-                          <span>{lang.name}</span>
-                        </button>
-                      ))}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                      EN
+                    </button>
+                    <button
+                      onClick={() => {
+                        setCurrentLang("sq")
+                        setShowLangDropdown(false)
+                      }}
+                      className="block w-full text-left px-3 py-2 text-sm text-white hover:bg-yellow-400 hover:text-black transition-colors"
+                    >
+                      SQ
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* Auth Buttons */}
               {isLoggedIn ? (
                 <div className="hidden md:flex items-center space-x-2">
-                  <span className="text-white text-sm">Welcome, {user?.firstName}</span>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleLogout}
-                    className="text-white hover:text-yellow-400 hover:bg-yellow-400/10"
-                  >
-                    Logout
+                  <span className="text-sm text-gray-300">Hello, {user?.firstName || user?.email}</span>
+                  <Link href="/add-property">
+                    <Button className="bg-yellow-500 hover:bg-yellow-600 text-black">
+                      {t.addProperty}
+                    </Button>
+                  </Link>
+                  <Button variant="ghost" onClick={handleLogout} className="text-white hover:text-yellow-400 btn-white-to-yellow">
+                    {t.logout}
                   </Button>
                 </div>
               ) : (
                 <div className="hidden md:flex items-center space-x-2">
-                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => {
-                        setAuthMode("login")
-                        setShowAuthModal(true)
-                      }}
-                      className="text-white hover:text-yellow-400 hover:bg-yellow-400/10"
-                    >
-                      <LogIn className="w-4 h-4 mr-2" />
-                      {t.login}
-                    </Button>
-                  </motion.div>
-                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                    <Button
-                      size="sm"
-                      onClick={() => {
-                        setAuthMode("signup")
-                        setShowAuthModal(true)
-                      }}
-                      className="bg-yellow-500 hover:bg-yellow-600 text-black font-medium"
-                    >
-                      <UserPlus className="w-4 h-4 mr-2" />
-                      {t.signup}
-                    </Button>
-                  </motion.div>
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      setAuthMode("login")
+                      setShowAuthModal(true)
+                    }}
+                    className="text-white hover:text-yellow-400 btn-white-to-yellow"
+                  >
+                    {t.login}
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      setAuthMode("signup")
+                      setShowAuthModal(true)
+                    }}
+                    className="bg-yellow-500 hover:bg-yellow-600 text-black"
+                  >
+                    {t.signup}
+                  </Button>
                 </div>
               )}
 
@@ -363,318 +535,503 @@ export default function HomePage() {
               </Button>
             </div>
           </div>
-        </div>
 
-        {/* Mobile Menu */}
-        <AnimatePresence>
-          {showMobileMenu && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              className="md:hidden bg-black/95 backdrop-blur-md border-t border-yellow-500/20"
-            >
-              <div className="container mx-auto px-4 py-4 space-y-4">
-                <Link
-                  href="/"
-                  className="block hover:text-yellow-400 transition-colors"
-                  onClick={() => setShowMobileMenu(false)}
-                >
-                  Home
-                </Link>
-                <Link
-                  href="/properties"
-                  className="block hover:text-yellow-400 transition-colors"
-                  onClick={() => setShowMobileMenu(false)}
-                >
-                  Properties
-                </Link>
-                <Link
-                  href="/about"
-                  className="block hover:text-yellow-400 transition-colors"
-                  onClick={() => setShowMobileMenu(false)}
-                >
-                  About
-                </Link>
-                <Link
-                  href="/contact"
-                  className="block hover:text-yellow-400 transition-colors"
-                  onClick={() => setShowMobileMenu(false)}
-                >
-                  Contact
-                </Link>
-                <div className="flex space-x-2 pt-4 border-t border-yellow-500/20">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => {
-                      setAuthMode("login")
-                      setShowAuthModal(true)
-                      setShowMobileMenu(false)
-                    }}
-                    className="text-white hover:text-yellow-400 hover:bg-yellow-400/10"
-                  >
-                    {t.login}
-                  </Button>
-                  <Button
-                    size="sm"
-                    onClick={() => {
-                      setAuthMode("signup")
-                      setShowAuthModal(true)
-                      setShowMobileMenu(false)
-                    }}
-                    className="bg-yellow-500 hover:bg-yellow-600 text-black"
-                  >
-                    {t.signup}
-                  </Button>
+          {/* Mobile Menu */}
+          <AnimatePresence>
+            {showMobileMenu && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="md:hidden border-t border-gray-700 py-4"
+              >
+                <div className="flex flex-col space-y-4">
+                  <Link href="/" className="text-white hover:text-yellow-400 transition-colors">
+                    {t.home}
+                  </Link>
+                  <Link href="/properties" className="text-white hover:text-yellow-400 transition-colors">
+                    {t.properties}
+                  </Link>
+                  <Link href="/buy" className="text-white hover:text-yellow-400 transition-colors">
+                    {t.buy}
+                  </Link>
+                  <Link href="/rent" className="text-white hover:text-yellow-400 transition-colors">
+                    {t.rent}
+                  </Link>
+                  <Link href="/sell" className="text-white hover:text-yellow-400 transition-colors">
+                    {t.sell}
+                  </Link>
+                  <Link href="/about" className="text-white hover:text-yellow-400 transition-colors">
+                    {t.about}
+                  </Link>
+                  <Link href="/contact" className="text-white hover:text-yellow-400 transition-colors">
+                    {t.contact}
+                  </Link>
+                  
+                  {isLoggedIn ? (
+                    <div className="flex flex-col space-y-2 pt-4 border-t border-gray-700">
+                      <span className="text-sm text-gray-300">Hello, {user?.firstName || user?.email}</span>
+                      <Link href="/add-property">
+                        <Button className="w-full bg-yellow-500 hover:bg-yellow-600 text-black">
+                          {t.addProperty}
+                        </Button>
+                      </Link>
+                      <Button variant="ghost" onClick={handleLogout} className="w-full text-white hover:text-yellow-400 btn-white-to-yellow">
+                        {t.logout}
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col space-y-2 pt-4 border-t border-gray-700">
+                      <Button
+                        variant="ghost"
+                        onClick={() => {
+                          setAuthMode("login")
+                          setShowAuthModal(true)
+                          setShowMobileMenu(false)
+                        }}
+                        className="w-full text-white hover:text-yellow-400 btn-white-to-yellow"
+                      >
+                        {t.login}
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          setAuthMode("signup")
+                          setShowAuthModal(true)
+                          setShowMobileMenu(false)
+                        }}
+                        className="w-full bg-yellow-500 hover:bg-yellow-600 text-black"
+                      >
+                        {t.signup}
+                      </Button>
+                    </div>
+                  )}
                 </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </header>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </nav>
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Background */}
+      <section className="relative py-20 px-4 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black">
-          <div className="absolute inset-0 bg-[url('/placeholder.svg?height=1080&width=1920')] bg-cover bg-center opacity-20"></div>
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/50"></div>
+          <div className="absolute inset-0 bg-[url('/placeholder.svg?height=1080&width=1920')] bg-cover bg-center opacity-10"></div>
         </div>
 
-        {/* Animated Background Elements */}
+        {/* Floating Elements */}
         <div className="absolute inset-0 overflow-hidden">
-          {[...Array(20)].map((_, i) => (
+          {[...Array(6)].map((_, i) => (
             <motion.div
               key={i}
-              className="absolute w-2 h-2 bg-yellow-400/30 rounded-full"
-              animate={{
-                x: [0, 100, 0],
-                y: [0, -100, 0],
-                opacity: [0, 1, 0],
-              }}
-              transition={{
-                duration: 3 + Math.random() * 2,
-                repeat: Number.POSITIVE_INFINITY,
-                delay: Math.random() * 2,
-              }}
+              className="absolute w-64 h-64 bg-yellow-400/5 rounded-full blur-xl"
               style={{
                 left: `${Math.random() * 100}%`,
                 top: `${Math.random() * 100}%`,
+              }}
+              animate={{
+                x: [0, 100, 0],
+                y: [0, -100, 0],
+                scale: [1, 1.2, 1],
+              }}
+              transition={{
+                duration: 10 + i * 2,
+                repeat: Infinity,
+                ease: "easeInOut",
               }}
             />
           ))}
         </div>
 
-        <div className="relative z-10 container mx-auto px-4 text-center">
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-white via-yellow-200 to-yellow-400 bg-clip-text text-transparent">
-              {t.hero}
-            </h1>
-            <p className="text-lg md:text-xl text-gray-300 mb-12 max-w-3xl mx-auto">{t.subtitle}</p>
-          </motion.div>
-
-          {/* Search Bar */}
+        <div className="container mx-auto relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="max-w-4xl mx-auto"
+            transition={{ duration: 1 }}
+            className="text-center max-w-4xl mx-auto"
           >
-            <Card className="bg-black/40 backdrop-blur-xl border border-yellow-500/30 shadow-2xl">
-              <CardContent className="p-6">
-                <div className="flex flex-col md:flex-row gap-4 items-center">
-                  {/* Buy/Rent Toggle */}
-                  <div className="flex bg-gray-800/50 rounded-lg p-1">
-                    <Button
-                      variant={searchType === "buy" ? "default" : "ghost"}
-                      size="sm"
-                      onClick={() => setSearchType("buy")}
-                      className={
-                        searchType === "buy"
-                          ? "bg-yellow-500 text-black hover:bg-yellow-600"
-                          : "text-white hover:bg-gray-700"
-                      }
-                    >
-                      <Key className="w-4 h-4 mr-2" />
-                      {t.buy}
-                    </Button>
-                    <Button
-                      variant={searchType === "rent" ? "default" : "ghost"}
-                      size="sm"
-                      onClick={() => setSearchType("rent")}
-                      className={
-                        searchType === "rent"
-                          ? "bg-yellow-500 text-black hover:bg-yellow-600"
-                          : "text-white hover:bg-gray-700"
-                      }
-                    >
-                      <Home className="w-4 h-4 mr-2" />
-                      {t.rent}
-                    </Button>
-                  </div>
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-white via-yellow-400 to-white bg-clip-text text-transparent">
+              {t.heroTitle}
+            </h1>
+            <p className="text-xl md:text-2xl text-gray-300 mb-12 leading-relaxed">
+              {t.heroSubtitle}
+            </p>
 
-                  {/* City Selector */}
-                  <div className="flex-1 min-w-0">
-                    <Select value={selectedCity} onValueChange={setSelectedCity}>
-                      <SelectTrigger className="bg-gray-800/50 border-gray-600 text-white">
-                        <div className="flex items-center">
-                          <MapPin className="w-4 h-4 mr-2 text-yellow-400" />
-                          <SelectValue placeholder={t.searchPlaceholder} />
-                        </div>
-                      </SelectTrigger>
-                      <SelectContent className="bg-gray-800 border-gray-600">
-                        {kosovoCities.map((city) => (
-                          <SelectItem key={city} value={city} className="text-white hover:bg-gray-700">
-                            {city}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Search Button */}
-                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                    <Button
-                      size="lg"
-                      onClick={handleSearch}
-                      className="bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 text-black font-semibold px-8 shadow-lg"
-                    >
-                      <div className="flex items-center bg-white/20 backdrop-blur-sm rounded-full p-2 mr-3">
-                        <Search className="w-4 h-4" />
-                      </div>
-                      {t.search}
-                    </Button>
-                  </motion.div>
+            {/* Search Bar */}
+            <div className="bg-gray-900/50 backdrop-blur-md rounded-2xl p-6 border border-yellow-500/20">
+              <div className="flex flex-col md:flex-row gap-4 items-center">
+                <div className="flex bg-gray-800 rounded-lg overflow-hidden">
+                  <Button
+                    variant={searchType === "buy" ? "default" : "ghost"}
+                    onClick={() => setSearchType("buy")}
+                    className={`px-6 py-3 ${
+                      searchType === "buy" ? "bg-yellow-500 text-black" : "text-white hover:text-yellow-400"
+                    }`}
+                  >
+                    {t.buyProperties}
+                  </Button>
+                  <Button
+                    variant={searchType === "rent" ? "default" : "ghost"}
+                    onClick={() => setSearchType("rent")}
+                    className={`px-6 py-3 ${
+                      searchType === "rent" ? "bg-yellow-500 text-black" : "text-white hover:text-yellow-400"
+                    }`}
+                  >
+                    {t.rentProperties}
+                  </Button>
                 </div>
-              </CardContent>
-            </Card>
+
+                <div className="flex-1 w-full">
+                  <Input
+                    placeholder={t.searchPlaceholder}
+                    className="bg-gray-800 border-gray-600 text-white placeholder-gray-400 h-12"
+                  />
+                </div>
+
+                <Select value={selectedCity} onValueChange={setSelectedCity}>
+                  <SelectTrigger className="w-full md:w-48 bg-gray-800 border-gray-600 text-white h-12">
+                    <SelectValue placeholder={t.allCities} />
+                  </SelectTrigger>
+                  <SelectContent className="bg-gray-800 border-gray-600">
+                    <SelectItem value="" className="text-white hover:bg-gray-700">{t.allCities}</SelectItem>
+                    <SelectItem value="Pristina" className="text-white hover:bg-gray-700">{t.pristina}</SelectItem>
+                    <SelectItem value="Prizren" className="text-white hover:bg-gray-700">{t.prizren}</SelectItem>
+                    <SelectItem value="Gjilan" className="text-white hover:bg-gray-700">{t.gjilan}</SelectItem>
+                    <SelectItem value="Peja" className="text-white hover:bg-gray-700">{t.peja}</SelectItem>
+                    <SelectItem value="Gjakova" className="text-white hover:bg-gray-700">{t.gjakova}</SelectItem>
+                    <SelectItem value="Mitrovica" className="text-white hover:bg-gray-700">{t.mitrovica}</SelectItem>
+                    <SelectItem value="Ferizaj" className="text-white hover:bg-gray-700">{t.ferizaj}</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                <Button 
+                  onClick={handleSearch}
+                  className="bg-yellow-500 hover:bg-yellow-600 text-black px-8 h-12 font-semibold"
+                >
+                  <Search className="w-5 h-5 mr-2" />
+                  {t.searchButton}
+                </Button>
+              </div>
+            </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Featured Properties - Only Real Properties */}
-      {dynamicProperties.length > 0 && (
-        <section className="py-20 bg-gradient-to-b from-black to-gray-900">
-          <div className="container mx-auto px-4">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              className="text-center mb-16"
-            >
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">{t.featuredProperties}</h2>
-              <div className="w-24 h-1 bg-gradient-to-r from-yellow-400 to-yellow-600 mx-auto"></div>
-            </motion.div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {dynamicProperties.map((property, index) => (
-                <motion.div
-                  key={property.id}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: index * 0.1 }}
-                  whileHover={{ y: -10 }}
-                  className="group cursor-pointer"
-                  onClick={() => handlePropertyClick(property.id)}
-                >
-                  <Card className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 hover:border-yellow-500/50 transition-all duration-300 overflow-hidden">
-                    <div className="relative">
-                      <Image
-                        src={property.image || "/placeholder.svg"}
-                        alt={property.title}
-                        width={300}
-                        height={200}
-                        className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                      <div className="absolute top-4 left-4 flex gap-2">
-                        {property.featured && <Badge className="bg-yellow-500 text-black">Featured</Badge>}
-                        {property.certified && (
-                          <Badge className="bg-blue-500 text-white flex items-center gap-1">
-                            <Star className="w-3 h-3" />
-                            Certified
-                          </Badge>
-                        )}
-                      </div>
-                      <div className="absolute top-4 right-4">
-                        <div className="bg-black/70 backdrop-blur-sm rounded-lg px-3 py-1">
-                          <span className="text-yellow-400 font-bold">{property.price}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <CardContent className="p-6">
-                      <h3 className="text-xl font-semibold text-white mb-2">{property.title}</h3>
-                      <p className="text-gray-400 mb-4 flex items-center">
-                        <MapPin className="w-4 h-4 mr-2 text-yellow-400" />
-                        {property.location}
-                      </p>
-                      <div className="flex justify-between text-sm text-gray-400">
-                        {property.beds > 0 && <span>{property.beds} beds</span>}
-                        {property.baths > 0 && <span>{property.baths} baths</span>}
-                        <span>{property.area}</span>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Why Choose Us */}
-      <section className="py-20 bg-gradient-to-b from-gray-900 to-black">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">{t.whyChooseUs}</h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-yellow-400 to-yellow-600 mx-auto"></div>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {/* Stats Section */}
+      <section className="py-16 px-4 bg-gray-900/30">
+        <div className="container mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
-              {
-                title: t.experience,
-                description: t.experienceDesc,
-                icon: Star,
-              },
-              {
-                title: t.properties,
-                description: t.propertiesDesc,
-                icon: Home,
-              },
-              {
-                title: t.support,
-                description: t.supportDesc,
-                icon: User,
-              },
-            ].map((feature, index) => (
+              { icon: Home, value: "1,200+", label: t.propertiesSold },
+              { icon: Users, value: "850+", label: t.happyClients },
+              { icon: Calendar, value: "14", label: t.yearsExperience },
+              { icon: MapPin, value: "25", label: t.citiesCovered },
+            ].map((stat, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
+                transition={{ delay: index * 0.1 }}
                 className="text-center"
               >
-                <div className="w-16 h-16 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <feature.icon className="w-8 h-8 text-black" />
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-yellow-500/20 rounded-full mb-4">
+                  <stat.icon className="w-8 h-8 text-yellow-400" />
                 </div>
-                <h3 className="text-xl font-semibold text-white mb-4">{feature.title}</h3>
-                <p className="text-gray-400">{feature.description}</p>
+                <div className="text-3xl font-bold text-white mb-2">{stat.value}</div>
+                <div className="text-gray-400">{stat.label}</div>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
+      {/* Featured Properties */}
+      <section className="py-20 px-4">
+        <div className="container mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">{t.featuredProperties}</h2>
+            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+              Discover our hand-picked selection of premium properties across Kosovo
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+            {allProperties.map((property, index) => (
+              <motion.div
+                key={property.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className="group"
+              >
+                <Card className="bg-gray-900/50 backdrop-blur-sm border border-gray-700 hover:border-yellow-500/50 transition-all duration-300 overflow-hidden">
+                  <div className="relative">
+                    <Image
+                      src={property.image}
+                      alt={property.title}
+                      width={400}
+                      height={250}
+                      className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                    <div className="absolute top-4 left-4 flex gap-2">
+                      {property.featured && (
+                        <Badge className="bg-yellow-500 text-black">Featured</Badge>
+                      )}
+                      {property.certified && (
+                        <Badge className="bg-green-500 text-white">Certified</Badge>
+                      )}
+                    </div>
+                    <div className="absolute top-4 right-4 flex gap-2">
+                      <Button size="sm" variant="ghost" className="bg-black/50 text-white hover:bg-black/70">
+                        <Heart className="w-4 h-4" />
+                      </Button>
+                      <Button size="sm" variant="ghost" className="bg-black/50 text-white hover:bg-black/70">
+                        <Share2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                  <CardContent className="p-6">
+                    <div className="flex justify-between items-start mb-3">
+                      <h3 className="font-semibold text-white text-lg group-hover:text-yellow-400 transition-colors">
+                        {property.title}
+                      </h3>
+                      <Badge variant="outline" className="border-gray-600 text-gray-400">
+                        {property.type === "sale" ? t.forSale : t.forRent}
+                      </Badge>
+                    </div>
+                    
+                    <div className="flex items-center text-gray-400 mb-4">
+                      <MapPin className="w-4 h-4 mr-1" />
+                      <span className="text-sm">{property.location}</span>
+                    </div>
+
+                    <div className="flex items-center justify-between text-sm text-gray-400 mb-4">
+                      <div className="flex items-center">
+                        <Bed className="w-4 h-4 mr-1" />
+                        <span>{property.beds}</span>
+                      </div>
+                      <div className="flex items-center">
+                        <Bath className="w-4 h-4 mr-1" />
+                        <span>{property.baths}</span>
+                      </div>
+                      <div className="flex items-center">
+                        <Square className="w-4 h-4 mr-1" />
+                        <span>{property.area}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div className="text-2xl font-bold text-yellow-400">
+                        €{property.price}
+                        {property.type === "rent" && <span className="text-sm text-gray-400">/month</span>}
+                      </div>
+                      <Link href={`/property/${property.id}`}>
+                        <Button 
+                          size="sm" 
+                          className="bg-yellow-500 hover:bg-yellow-600 text-black"
+                        >
+                          {t.viewDetails}
+                        </Button>
+                      </Link>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="text-center">
+            <Link href="/properties">
+              <Button className="bg-yellow-500 hover:bg-yellow-600 text-black px-8 py-3">
+                {t.viewAll}
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* About Section */}
+      <section className="py-20 px-4 bg-gray-900/30">
+        <div className="container mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+            >
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">{t.aboutTitle}</h2>
+              <p className="text-gray-300 text-lg mb-8 leading-relaxed">
+                {t.aboutDescription}
+              </p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                {[
+                  { icon: Shield, title: "Trusted Partner", desc: "14+ years in business" },
+                  { icon: Award, title: "Quality Service", desc: "850+ satisfied clients" },
+                  { icon: TrendingUp, title: "Market Leader", desc: "Top real estate agency" },
+                  { icon: CheckCircle, title: "Verified Properties", desc: "All properties checked" },
+                ].map((feature, index) => (
+                  <div key={index} className="flex items-start space-x-3">
+                    <div className="bg-yellow-500/20 p-2 rounded-lg">
+                      <feature.icon className="w-6 h-6 text-yellow-400" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-white mb-1">{feature.title}</h4>
+                      <p className="text-gray-400 text-sm">{feature.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link href="/about">
+                  <Button className="bg-yellow-500 hover:bg-yellow-600 text-black">
+                    {t.learnMore}
+                  </Button>
+                </Link>
+                <Link href="/valuation">
+                  <Button variant="outline" className="border-yellow-500 text-yellow-400 hover:bg-yellow-500 hover:text-black btn-white-to-yellow">
+                    {t.bookValuation}
+                  </Button>
+                </Link>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              className="relative"
+            >
+              <div className="relative bg-gradient-to-br from-yellow-400/20 to-transparent p-8 rounded-2xl">
+                <Image
+                  src="/images/sami-spahiu.jpg"
+                  alt="Sami Spahiu - PIRAMIDA Group Founder"
+                  width={500}
+                  height={600}
+                  className="rounded-xl shadow-2xl"
+                  onError={(e) => {
+                    e.currentTarget.src = "/placeholder.svg?height=600&width=500"
+                  }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent rounded-xl"></div>
+                <div className="absolute bottom-8 left-8 text-white">
+                  <h3 className="text-xl font-bold mb-2">Sami Spahiu</h3>
+                  <p className="text-gray-300">Founder & CEO</p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Services */}
+      <section className="py-20 px-4">
+        <div className="container mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Our Services</h2>
+            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+              Complete real estate solutions for all your property needs
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[
+              {
+                icon: Home,
+                title: t.buyingService,
+                desc: "Expert guidance for property purchases",
+                link: "/buy",
+              },
+              {
+                icon: DollarSign,
+                title: t.sellingService,
+                desc: "Maximize your property value",
+                link: "/sell",
+              },
+              {
+                icon: Calendar,
+                title: t.rentingService,
+                desc: "Find the perfect rental property",
+                link: "/rent",
+              },
+              {
+                icon: TrendingUp,
+                title: t.valuationService,
+                desc: "Professional property valuation",
+                link: "/valuation",
+              },
+            ].map((service, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <Link href={service.link}>
+                  <Card className="bg-gray-900/50 backdrop-blur-sm border border-gray-700 hover:border-yellow-500/50 transition-all duration-300 p-6 text-center group cursor-pointer">
+                    <div className="inline-flex items-center justify-center w-16 h-16 bg-yellow-500/20 rounded-full mb-6 group-hover:bg-yellow-500/30 transition-colors">
+                      <service.icon className="w-8 h-8 text-yellow-400" />
+                    </div>
+                    <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-yellow-400 transition-colors">
+                      {service.title}
+                    </h3>
+                    <p className="text-gray-400">{service.desc}</p>
+                  </Card>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Contact CTA */}
+      <section className="py-20 px-4 bg-gradient-to-r from-yellow-500/10 to-yellow-600/10">
+        <div className="container mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            className="max-w-3xl mx-auto"
+          >
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+              Ready to Find Your Dream Property?
+            </h2>
+            <p className="text-gray-300 text-lg mb-8">
+              Contact us today and let our experts help you with all your real estate needs.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/contact">
+                <Button className="bg-yellow-500 hover:bg-yellow-600 text-black px-8 py-3">
+                  <Phone className="w-5 h-5 mr-2" />
+                  Contact Us Today
+                </Button>
+              </Link>
+              <Button 
+                variant="outline" 
+                className="border-yellow-500 text-yellow-400 hover:bg-yellow-500 hover:text-black btn-white-to-yellow"
+                onClick={() => window.open(`tel:${t.phoneNumber}`, "_self")}
+              >
+                <Phone className="w-5 h-5 mr-2" />
+                {t.phoneNumber}
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Footer */}
-      <footer className="bg-black border-t border-yellow-500/20 py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <footer className="bg-gray-900 border-t border-gray-800 py-12 px-4">
+        <div className="container mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+            {/* Company Info */}
             <div>
               <div className="flex items-center space-x-2 mb-4">
                 <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center">
@@ -682,197 +1039,100 @@ export default function HomePage() {
                 </div>
                 <span className="text-lg font-bold text-yellow-400">PIRAMIDA Group</span>
               </div>
-              <p className="text-gray-400 text-sm">
-                Kosovo's premier real estate platform, connecting buyers, sellers, and renters since 2008.
+              <p className="text-gray-400 mb-4">
+                Your trusted real estate partner in Kosovo since 2010.
               </p>
+              <div className="space-y-2 text-sm text-gray-400">
+                <div className="flex items-center">
+                  <Phone className="w-4 h-4 mr-2" />
+                  {t.phoneNumber}
+                </div>
+                <div className="flex items-center">
+                  <Mail className="w-4 h-4 mr-2" />
+                  {t.email}
+                </div>
+                <div className="flex items-center">
+                  <MapPin className="w-4 h-4 mr-2" />
+                  {t.address}
+                </div>
+              </div>
             </div>
+
+            {/* Quick Links */}
             <div>
-              <h4 className="text-white font-semibold mb-4">Quick Links</h4>
-              <ul className="space-y-2 text-sm text-gray-400">
-                <li>
-                  <Link href="/properties" className="hover:text-yellow-400 transition-colors">
-                    Properties
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/about" className="hover:text-yellow-400 transition-colors">
-                    About Us
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/contact" className="hover:text-yellow-400 transition-colors">
-                    Contact
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/pricing" className="hover:text-yellow-400 transition-colors">
-                    Pricing
-                  </Link>
-                </li>
-              </ul>
+              <h3 className="text-white font-semibold mb-4">{t.company}</h3>
+              <div className="space-y-2">
+                <Link href="/about" className="block text-gray-400 hover:text-yellow-400 transition-colors">
+                  {t.about}
+                </Link>
+                <Link href="/pricing" className="block text-gray-400 hover:text-yellow-400 transition-colors">
+                  {t.pricing}
+                </Link>
+                <Link href="/contact" className="block text-gray-400 hover:text-yellow-400 transition-colors">
+                  {t.contact}
+                </Link>
+                <Link href="/workflow" className="block text-gray-400 hover:text-yellow-400 transition-colors">
+                  {t.workflow}
+                </Link>
+              </div>
             </div>
+
+            {/* Services */}
             <div>
-              <h4 className="text-white font-semibold mb-4">Services</h4>
-              <ul className="space-y-2 text-sm text-gray-400">
-                <li>
-                  <Link href="/buy" className="hover:text-yellow-400 transition-colors">
-                    Buy Property
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/rent" className="hover:text-yellow-400 transition-colors">
-                    Rent Property
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/sell" className="hover:text-yellow-400 transition-colors">
-                    Sell Property
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/valuation" className="hover:text-yellow-400 transition-colors">
-                    Property Valuation
-                  </Link>
-                </li>
-              </ul>
+              <h3 className="text-white font-semibold mb-4">{t.services}</h3>
+              <div className="space-y-2">
+                <Link href="/buy" className="block text-gray-400 hover:text-yellow-400 transition-colors">
+                  {t.buy}
+                </Link>
+                <Link href="/rent" className="block text-gray-400 hover:text-yellow-400 transition-colors">
+                  {t.rent}
+                </Link>
+                <Link href="/sell" className="block text-gray-400 hover:text-yellow-400 transition-colors">
+                  {t.sell}
+                </Link>
+                <Link href="/valuation" className="block text-gray-400 hover:text-yellow-400 transition-colors">
+                  {t.valuation}
+                </Link>
+              </div>
             </div>
+
+            {/* Properties */}
             <div>
-              <h4 className="text-white font-semibold mb-4">Contact Info</h4>
-              <ul className="space-y-2 text-sm text-gray-400">
-                <li>Pristina, Kosovo</li>
-                <li>+383 44 613 293</li>
-                <li>info@piramidagroup.net</li>
-              </ul>
+              <h3 className="text-white font-semibold mb-4">Properties</h3>
+              <div className="space-y-2">
+                <Link href="/properties" className="block text-gray-400 hover:text-yellow-400 transition-colors">
+                  {t.properties}
+                </Link>
+                <Link href="/properties?type=apartment" className="block text-gray-400 hover:text-yellow-400 transition-colors">
+                  {t.apartment}
+                </Link>
+                <Link href="/properties?type=house" className="block text-gray-400 hover:text-yellow-400 transition-colors">
+                  {t.house}
+                </Link>
+                <Link href="/properties?type=villa" className="block text-gray-400 hover:text-yellow-400 transition-colors">
+                  {t.villa}
+                </Link>
+              </div>
             </div>
           </div>
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400">
-            <p>&copy; 2024 PIRAMIDA Group. All rights reserved.</p>
+
+          <div className="border-t border-gray-800 pt-8 text-center">
+            <p className="text-gray-400">
+              © 2025 PIRAMIDA Group. All rights reserved. | Powered by Replit
+            </p>
           </div>
         </div>
       </footer>
 
       {/* Auth Modal */}
-      <AnimatePresence>
-        {showAuthModal && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-            onClick={() => setShowAuthModal(false)}
-          >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="bg-gray-900 rounded-xl border border-yellow-500/30 p-8 w-full max-w-md"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="text-center mb-6">
-                <h2 className="text-2xl font-bold text-white mb-2">{authMode === "login" ? t.login : t.signup}</h2>
-                <p className="text-gray-400">{authMode === "login" ? "Welcome back!" : "Create your account"}</p>
-              </div>
-
-              <div className="space-y-4">
-                {authMode === "signup" && (
-                  <div className="grid grid-cols-2 gap-4">
-                    <Input placeholder="First Name" className="bg-gray-800 border-gray-600 text-white" />
-                    <Input placeholder="Last Name" className="bg-gray-800 border-gray-600 text-white" />
-                  </div>
-                )}
-                <Input placeholder="Email" type="email" className="bg-gray-800 border-gray-600 text-white" />
-                <Input placeholder="Password" type="password" className="bg-gray-800 border-gray-600 text-white" />
-
-                <Button
-                  className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold"
-                  onClick={() => {
-                    const formData = {
-                      firstName:
-                        (document.querySelector('input[placeholder="First Name"]') as HTMLInputElement)?.value || "",
-                      lastName:
-                        (document.querySelector('input[placeholder="Last Name"]') as HTMLInputElement)?.value || "",
-                      email: (document.querySelector('input[placeholder="Email"]') as HTMLInputElement)?.value || "",
-                      password:
-                        (document.querySelector('input[placeholder="Password"]') as HTMLInputElement)?.value || "",
-                      provider: "email",
-                    }
-
-                    // Basic validation
-                    if (!formData.email || !formData.password) {
-                      alert("Please fill in all required fields.")
-                      return
-                    }
-
-                    if (authMode === "signup" && (!formData.firstName || !formData.lastName)) {
-                      alert("Please fill in your first and last name.")
-                      return
-                    }
-
-                    handleAuthSubmit(formData)
-                  }}
-                >
-                  {authMode === "login" ? t.login : t.signup}
-                </Button>
-
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-gray-600"></div>
-                  </div>
-                  <div className="relative flex justify-center text-sm">
-                    <span className="px-2 bg-gray-900 text-gray-400">or</span>
-                  </div>
-                </div>
-
-                <Button
-                  variant="outline"
-                  className="w-full border-gray-600 text-white hover:bg-gray-800"
-                  onClick={() => {
-                    // Simulate Google OAuth without browser notifications
-                    const googleUserData = {
-                      firstName: "Google",
-                      lastName: "User",
-                      email: `user${Date.now()}@gmail.com`, // Unique email each time
-                      provider: "google",
-                    }
-
-                    handleAuthSubmit(googleUserData)
-                  }}
-                >
-                  <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
-                    <path
-                      fill="currentColor"
-                      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                    />
-                    <path
-                      fill="currentColor"
-                      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                    />
-                    <path
-                      fill="currentColor"
-                      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                    />
-                    <path
-                      fill="currentColor"
-                      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                    />
-                  </svg>
-                  Continue with Google
-                </Button>
-
-                <p className="text-center text-sm text-gray-400">
-                  {authMode === "login" ? "Don't have an account? " : "Already have an account? "}
-                  <button
-                    onClick={() => setAuthMode(authMode === "login" ? "signup" : "login")}
-                    className="text-yellow-400 hover:underline"
-                  >
-                    {authMode === "login" ? "Sign up" : "Login"}
-                  </button>
-                </p>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        mode={authMode}
+        onModeChange={setAuthMode}
+        onSubmit={handleAuth}
+        translations={t}
+      />
     </div>
   )
 }
