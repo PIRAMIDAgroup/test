@@ -94,9 +94,13 @@ export default function ContactPage() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center">
-                <Home className="w-6 h-6 text-black" />
-              </div>
+              <Image
+                src="/images/piramida-logo-new.png"
+                alt="PIRAMIDA Group"
+                width={40}
+                height={40}
+                className="object-contain"
+              />
               <span className="text-xl font-bold text-yellow-400">PIRAMIDA Group</span>
             </Link>
             <Link href="/" className="flex items-center text-gray-400 hover:text-white transition-colors">

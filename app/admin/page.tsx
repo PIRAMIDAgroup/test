@@ -33,6 +33,7 @@ import {
 import { motion } from "framer-motion"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
+import Image from "next/image"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 
@@ -568,9 +569,13 @@ export default function AdminDashboard() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center">
-                <Home className="w-6 h-6 text-black" />
-              </div>
+              <Image
+                src="/images/piramida-logo-new.png"
+                alt="PIRAMIDA Group"
+                width={40}
+                height={40}
+                className="object-contain"
+              />
               <div>
                 <h1 className="text-xl font-bold text-yellow-400">PIRAMIDA Group</h1>
                 <p className="text-sm text-gray-400">Admin Dashboard</p>

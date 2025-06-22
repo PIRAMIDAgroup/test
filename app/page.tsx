@@ -1,4 +1,3 @@
-
 "use client"
 
 import type React from "react"
@@ -54,7 +53,7 @@ const translations = {
     pricing: "Pricing",
     valuation: "Valuation",
     workflow: "Workflow",
-    
+
     // Main content
     heroTitle: "Find Your Dream Property in Kosovo",
     heroSubtitle: "Discover the best real estate opportunities with PIRAMIDA Group - your trusted partner since 2010",
@@ -64,7 +63,7 @@ const translations = {
     rentProperties: "Rent",
     allCities: "All Cities",
     allTypes: "All Types",
-    
+
     // Property types
     apartment: "Apartment",
     house: "House",
@@ -72,7 +71,7 @@ const translations = {
     commercial: "Commercial",
     office: "Office",
     land: "Land",
-    
+
     // Cities
     pristina: "Pristina",
     prizren: "Prizren",
@@ -81,7 +80,7 @@ const translations = {
     gjilan: "Gjilan",
     mitrovica: "Mitrovica",
     ferizaj: "Ferizaj",
-    
+
     // Features
     featuredProperties: "Featured Properties",
     premiumProperties: "Premium Properties",
@@ -89,7 +88,7 @@ const translations = {
     viewAll: "View All",
     viewDetails: "View Details",
     contactAgent: "Contact Agent",
-    
+
     // Property details
     bedrooms: "Bedrooms",
     bathrooms: "Bathrooms",
@@ -98,39 +97,39 @@ const translations = {
     price: "Price",
     forSale: "For Sale",
     forRent: "For Rent",
-    
+
     // Stats
     propertiesSold: "Properties Sold",
     happyClients: "Happy Clients",
     yearsExperience: "Years Experience",
     citiesCovered: "Cities Covered",
-    
+
     // About section
     aboutTitle: "Why Choose PIRAMIDA Group?",
     aboutDescription: "With over a decade of experience in Kosovo's real estate market, we provide professional services and trusted expertise.",
-    
+
     // Services
     buyingService: "Property Buying",
     sellingService: "Property Selling",
     rentingService: "Property Renting",
     valuationService: "Property Valuation",
-    
+
     // Footer
     company: "Company",
     services: "Services",
     support: "Support",
-    
+
     // Auth
     login: "Login",
     signup: "Sign Up",
     logout: "Logout",
     addProperty: "Add Property",
-    
+
     // Contact
     phoneNumber: "+383 44 613 293",
     email: "info@piramidagroup.com",
     address: "Gjilan, Kosovo",
-    
+
     // Buttons
     getStarted: "Get Started",
     learnMore: "Learn More",
@@ -149,7 +148,7 @@ const translations = {
     pricing: "Çmimet",
     valuation: "Vlerësim",
     workflow: "Workflow",
-    
+
     // Main content
     heroTitle: "Gjeni Pronën Tuaj të Ëndrrave në Kosovë",
     heroSubtitle: "Zbuloni mundësitë më të mira të pasurive të patundshme me PIRAMIDA Group - partneri juaj i besuar që nga viti 2010",
@@ -159,7 +158,7 @@ const translations = {
     rentProperties: "Qira",
     allCities: "Të Gjitha Qytetet",
     allTypes: "Të Gjitha Llojet",
-    
+
     // Property types
     apartment: "Apartament",
     house: "Shtëpi",
@@ -167,7 +166,7 @@ const translations = {
     commercial: "Komerciale",
     office: "Zyrë",
     land: "Tokë",
-    
+
     // Cities
     pristina: "Prishtina",
     prizren: "Prizreni",
@@ -176,7 +175,7 @@ const translations = {
     gjilan: "Gjilani",
     mitrovica: "Mitrovica",
     ferizaj: "Ferizaj",
-    
+
     // Features
     featuredProperties: "Prona të Veçanta",
     premiumProperties: "Prona Premium",
@@ -184,7 +183,7 @@ const translations = {
     viewAll: "Shiko Të Gjitha",
     viewDetails: "Shiko Detajet",
     contactAgent: "Kontakto Agentin",
-    
+
     // Property details
     bedrooms: "Dhoma Gjumi",
     bathrooms: "Banjo",
@@ -193,39 +192,39 @@ const translations = {
     price: "Çmimi",
     forSale: "Për Shitje",
     forRent: "Për Qira",
-    
+
     // Stats
     propertiesSold: "Prona të Shitura",
     happyClients: "Klientë të Kënaqur",
     yearsExperience: "Vite Përvojë",
     citiesCovered: "Qytete të Mbuluara",
-    
+
     // About section
     aboutTitle: "Pse të Zgjidhni PIRAMIDA Group?",
     aboutDescription: "Me më shumë se një dekadë përvojë në tregun e pasurive të patundshme në Kosovë, ne ofrojmë shërbime profesionale dhe ekspertizë të besuar.",
-    
+
     // Services
     buyingService: "Blerje Prone",
     sellingService: "Shitje Prone",
     rentingService: "Qira Prone",
     valuationService: "Vlerësim Prone",
-    
+
     // Footer
     company: "Kompania",
     services: "Shërbimet",
     support: "Mbështetja",
-    
+
     // Auth
     login: "Hyrje",
     signup: "Regjistrohu",
     logout: "Dil",
     addProperty: "Shto Pronë",
-    
+
     // Contact
     phoneNumber: "+383 44 613 293",
     email: "info@piramidagroup.com",
     address: "Gjilan, Kosovë",
-    
+
     // Buttons
     getStarted: "Fillo Tani",
     learnMore: "Mëso Më Shumë",
@@ -356,7 +355,7 @@ export default function HomePage() {
     const searchParams = new URLSearchParams()
     searchParams.set("type", searchType)
     if (selectedCity && selectedCity !== "all") searchParams.set("city", selectedCity)
-    
+
     if (searchType === "buy") {
       window.location.href = `/buy?${searchParams.toString()}`
     } else {
@@ -419,7 +418,7 @@ export default function HomePage() {
             {/* Logo */}
             <Link href="/" className="flex items-center space-x-2">
               <Image
-                src="/images/piramida-logo.png"
+                src="/images/piramida-logo-new.png"
                 alt="PIRAMIDA Group Logo"
                 width={40}
                 height={40}
@@ -568,7 +567,7 @@ export default function HomePage() {
                   <Link href="/contact" className="text-white hover:text-yellow-400 transition-colors">
                     {t.contact}
                   </Link>
-                  
+
                   {isLoggedIn ? (
                     <div className="flex flex-col space-y-2 pt-4 border-t border-gray-700">
                       <span className="text-sm text-gray-300">Hello, {user?.firstName || user?.email}</span>
@@ -803,7 +802,7 @@ export default function HomePage() {
                         {property.type === "sale" ? t.forSale : t.forRent}
                       </Badge>
                     </div>
-                    
+
                     <div className="flex items-center text-gray-400 mb-4">
                       <MapPin className="w-4 h-4 mr-1" />
                       <span className="text-sm">{property.location}</span>
@@ -827,7 +826,7 @@ export default function HomePage() {
                     <div className="flex items-center justify-between">
                       <div className="text-2xl font-bold text-yellow-400">
                         €{property.price}
-                        {property.type === "rent" && <span className="text-sm text-gray-400">/month</span>}
+                        {property.type=== "rent" && <span className="text-sm text-gray-400">/month</span>}
                       </div>
                       <Link href={`/property/${property.id}`}>
                         <Button 
@@ -868,7 +867,7 @@ export default function HomePage() {
               <p className="text-gray-300 text-lg mb-8 leading-relaxed">
                 {t.aboutDescription}
               </p>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 {[
                   { icon: Shield, title: "Trusted Partner", desc: "14+ years in business" },
@@ -1029,9 +1028,13 @@ export default function HomePage() {
             {/* Company Info */}
             <div>
               <div className="flex items-center space-x-2 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center">
-                  <Home className="w-5 h-5 text-black" />
-                </div>
+                <Image
+                src="/images/piramida-logo-new.png"
+                alt="PIRAMIDA Group"
+                width={40}
+                height={40}
+                className="object-contain"
+              />
                 <span className="text-lg font-bold text-yellow-400">PIRAMIDA Group</span>
               </div>
               <p className="text-gray-400 mb-4">
@@ -1125,3 +1128,4 @@ export default function HomePage() {
     </div>
   )
 }
+\
