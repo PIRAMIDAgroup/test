@@ -354,7 +354,7 @@ export default function HomePage() {
   const handleSearch = () => {
     const searchParams = new URLSearchParams()
     searchParams.set("type", searchType)
-    if (selectedCity && selectedCity !== "all") searchParams.set("city", selectedCity)
+    if (selectedCity && selectedCity !== "") searchParams.set("city", selectedCity)
 
     if (searchType === "buy") {
       window.location.href = `/buy?${searchParams.toString()}`
@@ -692,7 +692,7 @@ export default function HomePage() {
                     <SelectValue placeholder={t.allCities} />
                   </SelectTrigger>
                   <SelectContent className="bg-gray-800 border-gray-600">
-                    <SelectItem value="all" className="text-white hover:bg-gray-700">{t.allCities}</SelectItem>
+                    <SelectItem value="" className="text-white hover:bg-gray-700">{t.allCities}</SelectItem>
                     <SelectItem value="Pristina" className="text-white hover:bg-gray-700">{t.pristina}</SelectItem>
                     <SelectItem value="Prizren" className="text-white hover:bg-gray-700">{t.prizren}</SelectItem>
                     <SelectItem value="Gjilan" className="text-white hover:bg-gray-700">{t.gjilan}</SelectItem>
@@ -1128,4 +1128,3 @@ export default function HomePage() {
     </div>
   )
 }
-\
