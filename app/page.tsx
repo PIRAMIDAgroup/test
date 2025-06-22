@@ -826,7 +826,7 @@ export default function HomePage() {
                     <div className="flex items-center justify-between">
                       <div className="text-2xl font-bold text-yellow-400">
                         €{property.price}
-                        {property.type=== "rent" && <spanclassName="text-sm text-gray-400">/month</span>}
+                        {property.type=== "rent" && <span className="text-sm text-gray-400">/month</span>}
                       </div>
                       <Link href={`/property/${property.id}`}>
                         <Button 
@@ -1125,3 +1125,6 @@ export default function HomePage() {
         onSubmit={handleAuth}
         translations={t}
       />
+    </div>
+  )
+}
