@@ -173,12 +173,12 @@ export default function PropertyDetailsPage() {
                 variant="outline"
                 size="sm"
                 onClick={() => setIsFavorite(!isFavorite)}
-                className="border-gray-600 text-white hover:bg-gray-800"
+                className="border-gray-600 text-white hover:bg-yellow-400 hover:text-black hover:border-yellow-400 btn-white-to-yellow"
               >
                 <Heart className={`w-4 h-4 mr-2 ${isFavorite ? "fill-red-500 text-red-500" : ""}`} />
                 {isFavorite ? "Saved" : "Save"}
               </Button>
-              <Button variant="outline" size="sm" className="border-gray-600 text-white hover:bg-gray-800">
+              <Button variant="outline" size="sm" className="border-gray-600 text-white hover:bg-yellow-400 hover:text-black hover:border-yellow-400 btn-white-to-yellow">
                 <Share2 className="w-4 h-4 mr-2" />
                 Share
               </Button>
@@ -508,13 +508,13 @@ export default function PropertyDetailsPage() {
                 <CardTitle className="text-white">Quick Actions</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button variant="outline" className="w-full border-gray-600 text-white hover:bg-gray-800">
+                <Button variant="outline" className="w-full border-gray-600 text-white hover:bg-yellow-400 hover:text-black hover:border-yellow-400 btn-white-to-yellow">
                   Schedule Viewing
                 </Button>
-                <Button variant="outline" className="w-full border-gray-600 text-white hover:bg-gray-800">
+                <Button variant="outline" className="w-full border-gray-600 text-white hover:bg-yellow-400 hover:text-black hover:border-yellow-400 btn-white-to-yellow">
                   Request Info
                 </Button>
-                <Button variant="outline" className="w-full border-gray-600 text-white hover:bg-gray-800">
+                <Button variant="outline" className="w-full border-gray-600 text-white hover:bg-yellow-400 hover:text-black hover:border-yellow-400 btn-white-to-yellow">
                   Calculate Mortgage
                 </Button>
               </CardContent>

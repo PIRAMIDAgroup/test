@@ -74,18 +74,23 @@
 }
 
 .btn-white-to-yellow:hover {
-  @apply bg-yellow-400 text-black border-yellow-400;
+  @apply bg-yellow-400 text-black border-yellow-400 !important;
 }
 
 /* Ensure all white/outline buttons get yellow hover effect */
-button[class*="bg-white"]:hover,
-button[class*="border-white"]:hover,
-button[class*="text-white"]:hover {
+button[class*="border-gray"]:hover,
+button[class*="text-white"]:hover,
+button[variant="outline"]:hover {
   @apply bg-yellow-400 text-black border-yellow-400 !important;
 }
 
 .btn-outline-white {
   @apply border border-white bg-transparent text-white hover:bg-yellow-400 hover:text-black hover:border-yellow-400 transition-all duration-300;
+}
+
+/* Additional specific targeting for outline variant buttons */
+.bg-background.hover\\:bg-accent:hover {
+  @apply bg-yellow-400 text-black border-yellow-400 !important;
 }
 
 /* Mobile responsiveness improvements */
