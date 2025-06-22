@@ -355,7 +355,7 @@ export default function HomePage() {
   const handleSearch = () => {
     const searchParams = new URLSearchParams()
     searchParams.set("type", searchType)
-    if (selectedCity) searchParams.set("city", selectedCity)
+    if (selectedCity && selectedCity !== "all") searchParams.set("city", selectedCity)
     
     if (searchType === "buy") {
       window.location.href = `/buy?${searchParams.toString()}`
@@ -418,9 +418,16 @@ export default function HomePage() {
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <Link href="/" className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center">
-                <Home className="w-6 h-6 text-black" />
-              </div>
+              <Image
+                src="/images/piramida-logo.png"
+                alt="PIRAMIDA Group Logo"
+                width={40}
+                height={40}
+                className="rounded-lg"
+                onError={(e) => {
+                  e.currentTarget.src = "/placeholder.svg?height=40&width=40"
+                }}
+              />
               <span className="text-xl font-bold text-yellow-400">PIRAMIDA Group</span>
             </Link>
 
@@ -437,9 +444,6 @@ export default function HomePage() {
               </Link>
               <Link href="/rent" className="text-white hover:text-yellow-400 transition-colors">
                 {t.rent}
-              </Link>
-              <Link href="/sell" className="text-white hover:text-yellow-400 transition-colors">
-                {t.sell}
               </Link>
               <Link href="/about" className="text-white hover:text-yellow-400 transition-colors">
                 {t.about}
@@ -557,9 +561,6 @@ export default function HomePage() {
                   </Link>
                   <Link href="/rent" className="text-white hover:text-yellow-400 transition-colors">
                     {t.rent}
-                  </Link>
-                  <Link href="/sell" className="text-white hover:text-yellow-400 transition-colors">
-                    {t.sell}
                   </Link>
                   <Link href="/about" className="text-white hover:text-yellow-400 transition-colors">
                     {t.about}
@@ -692,7 +693,7 @@ export default function HomePage() {
                     <SelectValue placeholder={t.allCities} />
                   </SelectTrigger>
                   <SelectContent className="bg-gray-800 border-gray-600">
-                    <SelectItem value="" className="text-white hover:bg-gray-700">{t.allCities}</SelectItem>
+                    <SelectItem value="all" className="text-white hover:bg-gray-700">{t.allCities}</SelectItem>
                     <SelectItem value="Pristina" className="text-white hover:bg-gray-700">{t.pristina}</SelectItem>
                     <SelectItem value="Prizren" className="text-white hover:bg-gray-700">{t.prizren}</SelectItem>
                     <SelectItem value="Gjilan" className="text-white hover:bg-gray-700">{t.gjilan}</SelectItem>
@@ -943,7 +944,7 @@ export default function HomePage() {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               {
                 icon: Home,
@@ -952,22 +953,16 @@ export default function HomePage() {
                 link: "/buy",
               },
               {
-                icon: DollarSign,
-                title: t.sellingService,
-                desc: "Maximize your property value",
-                link: "/sell",
-              },
-              {
                 icon: Calendar,
                 title: t.rentingService,
                 desc: "Find the perfect rental property",
                 link: "/rent",
               },
               {
-                icon: TrendingUp,
-                title: t.valuationService,
-                desc: "Professional property valuation",
-                link: "/valuation",
+                icon: Users,
+                title: "Property Management",
+                desc: "Professional property management services",
+                link: "/contact",
               },
             ].map((service, index) => (
               <motion.div
@@ -1065,9 +1060,6 @@ export default function HomePage() {
                 <Link href="/about" className="block text-gray-400 hover:text-yellow-400 transition-colors">
                   {t.about}
                 </Link>
-                <Link href="/pricing" className="block text-gray-400 hover:text-yellow-400 transition-colors">
-                  {t.pricing}
-                </Link>
                 <Link href="/contact" className="block text-gray-400 hover:text-yellow-400 transition-colors">
                   {t.contact}
                 </Link>
@@ -1087,11 +1079,8 @@ export default function HomePage() {
                 <Link href="/rent" className="block text-gray-400 hover:text-yellow-400 transition-colors">
                   {t.rent}
                 </Link>
-                <Link href="/sell" className="block text-gray-400 hover:text-yellow-400 transition-colors">
-                  {t.sell}
-                </Link>
-                <Link href="/valuation" className="block text-gray-400 hover:text-yellow-400 transition-colors">
-                  {t.valuation}
+                <Link href="/add-property" className="block text-gray-400 hover:text-yellow-400 transition-colors">
+                  Add Property
                 </Link>
               </div>
             </div>
